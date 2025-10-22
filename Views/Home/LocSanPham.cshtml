@@ -2,10 +2,12 @@
 @{
     var thuongHieuList = ViewBag.ThuongHieuSelectList as SelectList;
     var sortList = ViewBag.SortSelectList as List<SelectListItem>;
+    var minGia = Request.QueryString["minGia"] ?? "0";
+    var maxGia = Request.QueryString["maxGia"] ?? "70000000";
 }
 
 <style>
- 
+
     #filterForm {
         background: #fff;
         padding: 18px 22px;
@@ -104,14 +106,14 @@
         font-weight: 700;
     }
 
-   
+
     .product-brand {
         font-size: 13px;
         color: #666;
         margin-top: 3px;
     }
 
-  
+
     .no-products {
         background: #fff;
         border-radius: 14px;
@@ -129,13 +131,73 @@
             color: #777;
             font-weight: 500;
         }
+    /* ===== Thanh trượt khoảng giá ===== */
+    .range-slider {
+        width: 250px;
+        position: relative;
+        margin-top: 10px;
+    }
+
+    .slider-track {
+        height: 6px;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #007bff 0%, #00c3ff 100%);
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+
+    input[type="range"] {
+        position: absolute;
+        width: 100%;
+        height: 6px;
+        background: none;
+        pointer-events: none;
+        -webkit-appearance: none;
+        appearance: none;
+        z-index: 2;
+    }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: background 0.2s;
+        }
+
+            input[type="range"]::-webkit-slider-thumb:hover {
+                background: #007bff;
+            }
+
+    .range-values {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        margin-bottom: 8px;
+    }
 </style>
 
 
 <form id="filterForm" method="get" action="@Url.Action("LocSanPham", "Home")" class="d-flex flex-wrap gap-2 align-items-center justify-content-center">
     @Html.DropDownList("thuongHieu", thuongHieuList, "Chọn thương hiệu", new { @class = "form-select", style = "min-width:180px;" })
-    <input type="number" name="minGia" placeholder="Giá từ..." class="form-control" style="width:120px;" value="@(Request.QueryString["minGia"] ?? "")" />
-    <input type="number" name="maxGia" placeholder="Đến..." class="form-control" style="width:120px;" value="@(Request.QueryString["maxGia"] ?? "")" />
+    <!-- Thanh trượt khoảng giá -->
+    <div class="range-slider">
+        <div class="range-values">
+            <span id="rangeMinLabel">@string.Format("{0:N0}", Convert.ToInt32(minGia))</span>đ –
+            <span id="rangeMaxLabel">@string.Format("{0:N0}", Convert.ToInt32(maxGia))</span>đ
+        </div>
+        <input type="range" id="minRange" name="minGia" min="0" max="70000000" value="@minGia" step="100000">
+        <input type="range" id="maxRange" name="maxGia" min="0" max="70000000" value="@maxGia" step="100000">
+        <div class="slider-track" id="sliderTrack"></div>
+    </div>
     @Html.DropDownList("sort", sortList, "Sắp xếp giá", new { @class = "form-select", style = "width:180px;" })
     <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Lọc</button>
 </form>
@@ -167,3 +229,46 @@
     </div>
 }
 
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const minRange = document.getElementById("minRange");
+        const maxRange = document.getElementById("maxRange");
+        const minLabel = document.getElementById("rangeMinLabel");
+        const maxLabel = document.getElementById("rangeMaxLabel");
+        const track = document.getElementById("sliderTrack");
+        const form = document.getElementById("filterForm");
+
+        function updateSlider() {
+            const min = parseInt(minRange.value);
+            const max = parseInt(maxRange.value);
+            const percentMin = (min / parseInt(minRange.max)) * 100;
+            const percentMax = (max / parseInt(maxRange.max)) * 100;
+
+            minLabel.textContent = min.toLocaleString("vi-VN");
+            maxLabel.textContent = max.toLocaleString("vi-VN");
+
+            track.style.left = percentMin + "%";
+            track.style.right = (100 - percentMax) + "%";
+        }
+
+        // Giữ khoảng cách tối thiểu 1 triệu
+        minRange.addEventListener("input", () => {
+            if (+minRange.value >= +maxRange.value - 1000000)
+                minRange.value = +maxRange.value - 1000000;
+            updateSlider();
+        });
+
+        maxRange.addEventListener("input", () => {
+            if (+maxRange.value <= +minRange.value + 1000000)
+                maxRange.value = +minRange.value + 1000000;
+            updateSlider();
+        });
+
+        
+        
+
+        updateSlider();
+    });
+
+</script>

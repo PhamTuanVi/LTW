@@ -1,18 +1,50 @@
 ﻿@model List<LTW.Models.SanPham>
 
+<link href="@Url.Content("~/Content/css/product_card.css?v=" + DateTime.Now.Ticks)" rel="stylesheet" />
+
 @if (Model != null && Model.Any())
 {
-    <div class="row g-3 mt-2">
+    <div class="row g-4 mt-3">
         @foreach (var sp in Model)
         {
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="card h-100 product-card">
-                    <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">
-                        <img src="@Url.Content("~/Content/images/" + sp.HinhAnh1)" class="card-img-top" alt="@sp.TenSanPham" />
-                    </a>
-                    <div class="card-body">
-                        <h6 class="card-title text-truncate">@sp.TenSanPham</h6>
-                        <p class="text-danger fw-bold mb-0">@string.Format("{0:N0}đ", sp.Gia)</p>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <div class="product-card-img">
+                        <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">
+                            <img src="@Url.Content("~/Content/images/" + sp.HinhAnh1)" alt="@sp.TenSanPham" class="card-img-top" />
+                        </a>
+                        <div class="product-badge new-badge">Hot</div>
+                    </div>
+
+                    <div class="product-card-body">
+                        <h5 class="product-title">
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })" title="@sp.TenSanPham">
+                                @sp.TenSanPham
+                            </a>
+                        </h5>
+                        <div class="product-price">
+                            <span class="new-price">@string.Format("{0:N0}đ", sp.Gia)</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <div class="text-warning small">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <div class="text-muted small">Đã bán: 12</div>
+                        </div>
+                    </div>
+
+                    <div class="product-card-footer">
+                        <a href="@Url.Action("ThemGioHang", "GioHang", new { id = sp.SanPhamID })" class="btn btn-primary btn-add-to-cart">
+                            <i class="fas fa-cart-plus"></i> Thêm giỏ hàng
+                        </a>
+                        <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })" class="btn btn-outline-secondary btn-view-details">
+                            <i class="fas fa-eye"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -22,6 +54,6 @@
 else
 {
     <div class="alert alert-info text-center mt-2">
-        <i class="fas fa-info-circle"></i> Hiện chưa có sản phẩm nào trong danh mục này.
+        <i class="fas fa-info-circle"></i> Không có sản phẩm nào phù hợp với bộ lọc.
     </div>
 }
