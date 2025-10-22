@@ -72,11 +72,80 @@
         [data-theme="dark"] .brand-subheader {
             border-bottom-color: #444;
         }
+        .banner-img {
+            height: 420px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.45);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            bottom: 2rem;
+        }
+
+            .carousel-caption h5 {
+                font-size: 1.75rem;
+                font-weight: 600;
+            }
+
+            .carousel-caption p {
+                font-size: 1rem;
+                margin-top: 0.5rem;
+            }
+
+        [data-theme="dark"] .carousel-caption {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
     </style>
 }
 
 
 <div class="container-fluid mt-4">
+    <div id="bannerCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+      
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <div class="carousel-inner rounded-4 shadow-sm">
+            <div class="carousel-item active" data-bs-interval="1000">
+                <img src="~/Content/banner/banner1.jpg" class="d-block w-100 banner-img" alt="Khuyến mãi 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Siêu giảm giá 50%</h5>
+                    <p>Điện thoại hot nhất mùa này đang giảm giá cực mạnh!</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="1000">
+                <img src="~/Content/banner/banner2.jpg" class="d-block w-100 banner-img" alt="Khuyến mãi 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Mua 1 Tặng 1</h5>
+                    <p>Phụ kiện công nghệ hấp dẫn đang chờ bạn.</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="1000">
+                <img src="~/Content/banner/banner3.jpg" class="d-block w-100 banner-img" alt="Khuyến mãi 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Ưu đãi thành viên</h5>
+                    <p>Nhận thêm 5% khi đăng ký tài khoản hôm nay!</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Trước</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Sau</span>
+        </button>
+    </div>
+
     <div class="filter-section">
         @Html.Action("LocSanPham", "Home")
     </div>

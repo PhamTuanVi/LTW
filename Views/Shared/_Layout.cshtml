@@ -44,12 +44,12 @@
             </div>
 
             <div class="header-actions">
-               
+
                 <button class="icon-btn" id="themeToggle" title="Chuyển giao diện">
                     <i class="fas fa-moon"></i>
                 </button>
 
-              
+
                 <div class="user-avatar-container">
                     <div class="user-avatar" id="user-avatar-toggle" title="Tài khoản" style="cursor: pointer;">
                         <i class="fas fa-user"></i>
@@ -96,35 +96,36 @@
                 </div>
                 <!--giỏ hàng-->
 
-                <div class="cart-container">
-                    <button class="icon-btn" id="cart-toggle" title="Giỏ hàng">
-                        <i class="fas fa-shopping-cart"></i>
-                     
-                    </button>
+                @if (role != "Admin")
+                {
+                    <div class="cart-container">
+                        <button class="icon-btn" id="cart-toggle" title="Giỏ hàng">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
 
-                    <div class="cart-menu" id="cart-menu">
-                        @if (string.IsNullOrEmpty(hoTen))
-                        {
-                            <div class="empty-state">
-                                <i class="fas fa-shopping-cart"></i>
-                                <p>Đăng nhập để xem giỏ hàng và thanh toán</p>
-                                <div class="empty-state-actions">
-                                    <a href="@Url.Action("DangNhap","TaiKhoan")" class="btn-primary">
-                                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
-                                    </a>
-                                    <a href="@Url.Action("DangKy","TaiKhoan")" class="btn-secondary">
-                                        <i class="fas fa-user-plus"></i> Đăng ký
-                                    </a>
+                        <div class="cart-menu" id="cart-menu">
+                            @if (string.IsNullOrEmpty(hoTen))
+                            {
+                                <div class="empty-state">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <p>Đăng nhập để xem giỏ hàng và thanh toán</p>
+                                    <div class="empty-state-actions">
+                                        <a href="@Url.Action("DangNhap","TaiKhoan")" class="btn-primary">
+                                            <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                                        </a>
+                                        <a href="@Url.Action("DangKy","TaiKhoan")" class="btn-secondary">
+                                            <i class="fas fa-user-plus"></i> Đăng ký
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        }
-                        else
-                        {
-                            @*@Html.Action("MiniCart", "GioHang")*@
-                        }
-
+                            }
+                            else
+                            {
+                                @Html.Action("MiniCart", "GioHang") 
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
             </div>
 
