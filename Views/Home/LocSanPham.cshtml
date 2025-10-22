@@ -5,63 +5,77 @@
 }
 
 <style>
-    
+ 
     #filterForm {
         background: #fff;
-        padding: 16px;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        padding: 18px 22px;
+        border-radius: 14px;
+        box-shadow: 0 6px 10px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        border: 1px solid #eee;
     }
 
-    
+        #filterForm .form-select, #filterForm .form-control {
+            border-radius: 10px;
+        }
+
+        #filterForm .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 8px 18px;
+        }
+
+
     .product-card {
         background: #fff;
-        border-radius: 16px;
+        border-radius: 18px;
         overflow: hidden;
+        border: 1px solid #f1f1f1;
         transition: all 0.25s ease;
-        border: 1px solid #eee;
-        height: 100%;
         display: flex;
         flex-direction: column;
+        height: 100%;
+        position: relative;
     }
 
         .product-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 10px 18px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-color: #007bff30;
         }
 
     .product-card-img {
         position: relative;
         overflow: hidden;
-        border-bottom: 1px solid #f1f1f1;
     }
 
         .product-card-img img {
             width: 100%;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
         }
 
-    .product-card:hover img {
-        transform: scale(1.05);
+    .product-card:hover .product-card-img img {
+        transform: scale(1.08);
     }
 
     .product-badge {
         position: absolute;
         top: 10px;
         left: 10px;
-        background: #ff4757;
+        background: linear-gradient(135deg, #ff4757, #ff6b81);
         color: #fff;
         font-size: 13px;
         font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 10px;
+        padding: 5px 10px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
 
     .product-card-body {
         flex-grow: 1;
-        padding: 12px 14px;
+        padding: 12px 15px 16px;
         text-align: center;
     }
 
@@ -71,10 +85,11 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-weight: 600;
         color: #333;
         text-decoration: none;
         font-size: 15px;
+        font-weight: 600;
+        transition: color 0.2s;
         min-height: 2.5em;
     }
 
@@ -83,24 +98,41 @@
         }
 
     .product-price {
-        color: #e63946;
-        font-weight: 700;
-        font-size: 17px;
         margin-top: 6px;
+        color: #e63946;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+   
+    .product-brand {
+        font-size: 13px;
+        color: #666;
+        margin-top: 3px;
     }
 
   
     .no-products {
         background: #fff;
-        border-radius: 12px;
-        padding: 30px;
+        border-radius: 14px;
+        padding: 40px;
         text-align: center;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.05);
     }
+
+        .no-products i {
+            color: #ccc;
+        }
+
+        .no-products h5 {
+            margin-top: 12px;
+            color: #777;
+            font-weight: 500;
+        }
 </style>
 
 
-<form id="filterForm" method="get" action="@Url.Action("LocSanPham", "Home")" class="d-flex flex-wrap gap-2 align-items-center mb-4">
+<form id="filterForm" method="get" action="@Url.Action("LocSanPham", "Home")" class="d-flex flex-wrap gap-2 align-items-center justify-content-center">
     @Html.DropDownList("thuongHieu", thuongHieuList, "Chọn thương hiệu", new { @class = "form-select", style = "min-width:180px;" })
     <input type="number" name="minGia" placeholder="Giá từ..." class="form-control" style="width:120px;" value="@(Request.QueryString["minGia"] ?? "")" />
     <input type="number" name="maxGia" placeholder="Đến..." class="form-control" style="width:120px;" value="@(Request.QueryString["maxGia"] ?? "")" />
@@ -126,6 +158,7 @@
                         <h5 class="product-title">
                             <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">@sp.TenSanPham</a>
                         </h5>
+                        <div class="product-brand">@sp.ThuongHieu</div>
                         <div class="product-price">@string.Format("{0:N0}đ", sp.Gia)</div>
                     </div>
                 </div>
@@ -133,3 +166,4 @@
         }
     </div>
 }
+

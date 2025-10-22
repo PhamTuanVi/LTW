@@ -130,7 +130,7 @@ namespace LTW.Controllers
                 new SelectListItem { Text = "Giá giảm dần", Value = "desc", Selected = sort=="desc"}
             };
 
-            return PartialView(lstSp);
+            return View(lstSp);
         }
     }
 }
