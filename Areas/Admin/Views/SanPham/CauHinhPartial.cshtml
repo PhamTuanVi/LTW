@@ -1,0 +1,22 @@
+﻿@model LTW.Models.ChiTietCauHinh
+
+
+@if (Model != null)
+{
+    <table class="table table-hover table-bordered align-middle mb-0 bg-white rounded-3 shadow-sm">
+        <tbody>
+            <tr><th style="width: 30%;">Màn hình</th><td>@Model.ManHinh</td></tr>
+            <tr><th>Chip xử lý</th><td>@Model.ChipXuLy</td></tr>
+            <tr><th>RAM</th><td>@Model.RAM</td></tr>
+            <tr><th>Bộ nhớ trong</th><td>@Model.BoNhoTrong</td></tr>
+            <tr><th>Pin</th><td>@Model.Pin</td></tr>
+            <tr><th>Hệ điều hành</th><td>@Model.HeDieuHanh</td></tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-light border mt-3 text-center" role="alert">
+        <i class="bi bi-info-circle text-secondary"></i> Không có thông tin cấu hình cho sản phẩm này.
+    </div>
+}

@@ -1,0 +1,165 @@
+﻿@model IEnumerable<LTW.Models.SanPham>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sanPhamMoi = ViewBag.SanPhamMoi as List<LTW.Models.SanPham>;
+    var dsDanhMuc = ViewBag.DanhSachDanhMuc as List<LTW.Models.DanhMuc>;
+}
+@section Styles {
+    <link href="@Url.Content("~/Content/css/product_card.css?v=" + DateTime.Now.Ticks)" rel="stylesheet" />
+
+    <style>
+        .category-section {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem 1.5rem 2rem 1.5rem;
+            background-color: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #dee2e6);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .category-section {
+            background-color: #2c2c2c;
+            border-color: #444;
+        }
+
+        .section-title-category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+            .section-title-category h2 {
+                font-size: 2rem;
+                font-weight: 600;
+                color: var(--text-color);
+                margin: 0;
+            }
+
+        .title-underline-category {
+            height: 3px;
+            background-color: var(--border-color, #eee);
+            border-radius: 2px;
+            width: 100%;
+            position: relative;
+        }
+
+            .title-underline-category::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 120px;
+                height: 100%;
+                background-color: var(--primary-color, #0d6efd);
+            }
+
+        [data-theme="dark"] .title-underline-category {
+            background-color: #444;
+        }
+
+        .brand-subheader {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color, #eee);
+        }
+
+        [data-theme="dark"] .brand-subheader {
+            border-bottom-color: #444;
+        }
+    </style>
+}
+
+
+<div class="container-fluid mt-4">
+    <div class="filter-section">
+        @Html.Action("LocSanPham", "Home")
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="section-title">
+                <h2>Hàng Mới Về</h2>
+                <div class="title-underline"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @if (sanPhamMoi != null && sanPhamMoi.Any())
+        {
+            foreach (var sanPham in sanPhamMoi)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-card-img">
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })">
+                                <img src="@Url.Content("~/Content/images/" + sanPham.HinhAnh1)" alt="@sanPham.TenSanPham" class="card-img-top">
+                            </a>
+                            <div class="product-badge new-badge">Mới</div>
+                        </div>
+                        <div class="product-card-body">
+                            <h5 class="product-title">
+                                <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })" title="@sanPham.TenSanPham">@sanPham.TenSanPham</a>
+                            </h5>
+                            <div class="product-price">
+                                <span class="new-price">@string.Format("{0:N0}đ", sanPham.Gia)</span>
+                            </div>
+                        </div>
+                        <div class="product-card-footer">
+                            <a href="@Url.Action("ThemGioHang", "GioHang", new { id = sanPham.SanPhamID })" class="btn btn-primary btn-add-to-cart">
+                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                            </a>
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })" class="btn btn-outline-secondary btn-view-details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    <i class="fas fa-info-circle"></i> Không có sản phẩm mới nào trong 14 ngày qua.
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (dsDanhMuc != null && dsDanhMuc.Any())
+    {
+        foreach (var dm in dsDanhMuc)
+        {
+            if (Model.Any(p => p.DanhMucID == dm.DanhMucID))
+            {
+                <div class="row category-section mb-5">
+                    <div class="col-12">
+                        <div class="section-title-category d-flex justify-content-between align-items-center">
+                            <h2 class="text-primary">@dm.TenDanhMuc</h2>
+                            <a href="@Url.Action("SanPhamTheoDanhMuc", "SanPham", new { id = dm.DanhMucID })" class="btn btn-outline-primary btn-sm">
+                                Xem tất cả <i class="fas fa-chevron-right fa-xs"></i>
+                            </a>
+                        </div>
+                        <div class="title-underline-category mb-3"></div>
+                    </div>
+
+
+                    <div class="col-12 mt-3">
+                        @{ Html.RenderAction("ThuongHieuTheoDanhMuc", "Home", new { id = dm.DanhMucID }); }
+                    </div>
+
+
+                    @{ Html.RenderAction("SanPhamTheoDanhMucPartial", "Home", new { id = dm.DanhMucID }); }
+                </div>
+            }
+        }
+    }
+
+</div> 

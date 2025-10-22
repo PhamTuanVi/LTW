@@ -1,0 +1,106 @@
+﻿
+.quick-links-bar {
+    background-color: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #dee2e6);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.quick-links-list {
+    display: flex;
+    flex-wrap: nowrap; 
+    overflow-x: auto; 
+    gap: 1.5rem;
+    padding-bottom: 10px; 
+}
+
+  
+    .quick-links-list::-webkit-scrollbar {
+        display: none;
+    }
+
+.quick-link-item {
+    text-align: center;
+    min-width: 80px;
+}
+
+    .quick-link-item a {
+        text-decoration: none;
+        color: var(--text-color);
+        transition: color 0.3s ease, transform 0.3s ease;
+        display: block;
+    }
+
+        .quick-link-item a:hover {
+            color: var(--primary-color, #0d6efd);
+            transform: translateY(-3px);
+        }
+
+
+.quick-link-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    background-color: var(--body-bg-secondary, #f8f9fa);
+    border: 1px solid var(--border-color, #dee2e6);
+    color: var(--primary-color, #0d6efd);
+    transition: all 0.3s ease;
+}
+
+.quick-link-item a:hover .quick-link-icon {
+    background-color: var(--primary-color, #0d6efd);
+    color: #fff;
+    border-color: var(--primary-color, #0d6efd);
+}
+
+
+.quick-link-item span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: block;
+}
+
+[data-theme="dark"] .quick-links-bar {
+    border-color: #444;
+}
+
+[data-theme="dark"] .quick-link-icon {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+
+
+.load-more-container {
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-load-more {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 2px solid var(--border-color, #dee2e6);
+    background-color: var(--card-bg, #fff);
+    color: var(--text-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .btn-load-more:hover {
+        background-color: var(--primary-color, #0d6efd);
+        color: #fff;
+        border-color: var(--primary-color, #0d6efd);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+[data-theme="dark"] .btn-load-more {
+    border-color: #555;
+}

@@ -1,0 +1,135 @@
+﻿@model IEnumerable<LTW.Models.SanPham>
+@{
+    var thuongHieuList = ViewBag.ThuongHieuSelectList as SelectList;
+    var sortList = ViewBag.SortSelectList as List<SelectListItem>;
+}
+
+<style>
+    
+    #filterForm {
+        background: #fff;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    
+    .product-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        border: 1px solid #eee;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.1);
+        }
+
+    .product-card-img {
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+        .product-card-img img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+    .product-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #ff4757;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 10px;
+    }
+
+    .product-card-body {
+        flex-grow: 1;
+        padding: 12px 14px;
+        text-align: center;
+    }
+
+    .product-title a {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        color: #333;
+        text-decoration: none;
+        font-size: 15px;
+        min-height: 2.5em;
+    }
+
+        .product-title a:hover {
+            color: #007bff;
+        }
+
+    .product-price {
+        color: #e63946;
+        font-weight: 700;
+        font-size: 17px;
+        margin-top: 6px;
+    }
+
+  
+    .no-products {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    }
+</style>
+
+
+<form id="filterForm" method="get" action="@Url.Action("LocSanPham", "Home")" class="d-flex flex-wrap gap-2 align-items-center mb-4">
+    @Html.DropDownList("thuongHieu", thuongHieuList, "Chọn thương hiệu", new { @class = "form-select", style = "min-width:180px;" })
+    <input type="number" name="minGia" placeholder="Giá từ..." class="form-control" style="width:120px;" value="@(Request.QueryString["minGia"] ?? "")" />
+    <input type="number" name="maxGia" placeholder="Đến..." class="form-control" style="width:120px;" value="@(Request.QueryString["maxGia"] ?? "")" />
+    @Html.DropDownList("sort", sortList, "Sắp xếp giá", new { @class = "form-select", style = "width:180px;" })
+    <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Lọc</button>
+</form>
+
+
+@if (Model != null && Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var sp in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <div class="product-card-img">
+                        <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">
+                            <img src="@Url.Content("~/Content/images/" + sp.HinhAnh1)" alt="@sp.TenSanPham" />
+                        </a>
+                        <div class="product-badge">Mới</div>
+                    </div>
+                    <div class="product-card-body">
+                        <h5 class="product-title">
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">@sp.TenSanPham</a>
+                        </h5>
+                        <div class="product-price">@string.Format("{0:N0}đ", sp.Gia)</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

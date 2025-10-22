@@ -1,0 +1,60 @@
+﻿@{
+    var chiTiets = ViewBag.ChiTiets as List<LTW.Models.GioHangChiTiet>;
+    var sanPhams = ViewBag.SanPhams as List<LTW.Models.SanPham>;
+}
+
+@if (chiTiets == null || !chiTiets.Any())
+{
+    <div class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Giỏ hàng của bạn đang trống</p>
+    </div>
+}
+else
+{
+    int tongSoLuong = 0;
+    decimal tongTien = 0;
+
+    foreach (var ct in chiTiets)
+    {
+        tongSoLuong += ct.SoLuong;
+
+        LTW.Models.SanPham sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+        if (sp != null)
+        {
+            tongTien += sp.Gia * ct.SoLuong;
+        }
+    }
+
+    <div class="cart-header">
+        <h3>Giỏ hàng của bạn</h3>
+        <span class="cart-count">(@tongSoLuong sản phẩm)</span>
+    </div>
+
+    <div class="cart-list">
+        @foreach (var ct in chiTiets)
+        {
+            LTW.Models.SanPham sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+            if (sp != null)
+            {
+                <div class="cart-item">
+                    <img src="@Url.Content(sp.HinhAnh1)" class="cart-item-image" />
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">@sp.TenSanPham</div>
+                        <div class="cart-item-price">@String.Format("{0:N0}₫", sp.Gia * ct.SoLuong)</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="cart-footer">
+        <div class="cart-footer-row">
+            <div class="cart-total">Tổng cộng:</div>
+            <div class="cart-total-price">@String.Format("{0:N0}₫", tongTien)</div>
+        </div>
+        <a href="@Url.Action("Index","GioHang")" class="btn-checkout">
+            <i class="fas fa-shopping-bag"></i> Xem giỏ hàng
+        </a>
+    </div>
+}

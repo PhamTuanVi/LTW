@@ -1,0 +1,138 @@
+﻿@model LTW.Models.TaiKhoan
+@{
+    ViewBag.Title = "Chỉnh sửa thông tin cá nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <style>
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-primary, #1e2530);
+        }
+
+        .edit-profile {
+            
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-secondary, #2e3440);
+            border-radius: 12px;
+            padding: 35px;
+            color: var(--text-primary, #fff);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+            .edit-profile h2 {
+                text-align: center;
+                margin-bottom: 25px;
+                color: #4facfe;
+                font-weight: 600;
+            }
+
+          
+            .edit-profile .form-group {
+                margin-bottom: 20px;
+               
+                display: flex;
+                flex-direction: column;
+                align-items: center; 
+            }
+
+            .edit-profile label {
+                
+                text-align: left;
+                font-weight: 500;
+                color: var(--text-secondary, #a0aec0);
+                display: block;
+                margin-bottom: 6px;
+                width: 80%;
+                max-width: 450px; 
+            }
+
+            .edit-profile input.form-control {
+              
+                width: 80%;
+                max-width: 450px;
+                
+                padding: 10px 12px;
+                border: 1px solid var(--border-color, #444c5a);
+                border-radius: 8px;
+                background: var(--bg-tertiary, #2d3548); 
+                color: var(--text-primary, #fff); 
+                font-size: 15px;
+                outline: none;
+                transition: 0.3s;
+            }
+
+                .edit-profile input.form-control:focus {
+                    border-color: #4facfe;
+                    box-shadow: 0 0 5px rgba(79, 172, 254, 0.4);
+                }
+           
+            .edit-profile .btn {
+                display: inline-block;
+                background: #4facfe;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                text-decoration: none;
+                transition: background 0.3s;
+                margin: 0 5px;
+            }
+
+                .edit-profile .btn:hover {
+                    background: #357abd;
+                }
+
+            .edit-profile a.btn {
+                background: #6c757d;
+            }
+
+                .edit-profile a.btn:hover {
+                    background: #5a6268;
+                }
+
+            .edit-profile .text-center {
+                text-align: center;
+                margin-top: 30px; 
+            }
+    </style>
+}
+
+<div class="edit-profile">
+    <h2>Chỉnh sửa thông tin cá nhân</h2>
+
+    @using (Html.BeginForm("SuaThongTin", "TaiKhoan", FormMethod.Post))
+    {
+       
+        <div class="form-group">
+            <label>Họ tên</label>
+            @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+        </div>
+
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label>Địa chỉ</label>
+            @Html.TextBoxFor(m => m.DiaChi, new { @class = "form-control" })
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn">💾 Lưu thay đổi</button>
+            <a href="@Url.Action("ThongTin", "TaiKhoan")" class="btn">⬅ Quay lại</a>
+        </div>
+    }
+</div>

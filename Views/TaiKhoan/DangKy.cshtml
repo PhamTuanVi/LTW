@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/Content/css/DangKy.css" rel="stylesheet" />
+}
+
+<div class="register-wrapper">
+    <div class="register-container">
+        <h2>Đăng ký tài khoản</h2>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert">@ViewBag.Error</div>
+        }
+
+        @using (Html.BeginForm("DangKy", "TaiKhoan", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+        {
+            <div class="mb-3">
+                <label for="tenDangNhap" class="form-label">Tên đăng nhập</label>
+                <input type="text" name="tenDangNhap" id="tenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập..." required />
+            </div>
+
+            <div class="mb-3">
+                <label for="matKhau" class="form-label">Mật khẩu</label>
+                <input type="password" name="matKhau" id="matKhau" class="form-control" placeholder="Nhập mật khẩu..." required />
+            </div>
+
+            <div class="mb-3">
+                <label for="hoTen" class="form-label">Họ tên</label>
+                <input type="text" name="hoTen" id="hoTen" class="form-control" placeholder="Nguyễn Văn A" />
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="you@example.com" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                <input type="text" name="soDienThoai" id="soDienThoai" class="form-control" placeholder="Nhập số điện thoại..." />
+            </div>
+
+            <div class="mb-3">
+                <label for="diaChi" class="form-label">Địa chỉ</label>
+                <textarea name="diaChi" id="diaChi" class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Đăng ký</button>
+        }
+
+        <a href="@Url.Action("DangNhap", "TaiKhoan")" class="btn-link">Đã có tài khoản? Đăng nhập ngay</a>
+    </div>
+</div>

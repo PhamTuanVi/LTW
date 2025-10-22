@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <style>
+        .btn {
+            min-width: 170px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+    </style>
+}
+<div class="container-fluid mt-4">
+    <h2 class="mb-4 text-center fw-bold text-primary">Bảng điều khiển quản trị</h2>
+    <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+        <a href="~/Admin/SanPham/ThemSanPham" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle"></i> Thêm sản phẩm
+        </a>
+        <a href="~/Admin/SanPham" class="btn btn-outline-primary shadow-sm">
+            <i class="bi bi-box"></i> Quản lý sản phẩm
+        </a>
+        <a href="~/Admin/DonHang" class="btn btn-outline-success shadow-sm">
+            <i class="bi bi-cart4"></i> Quản lý đơn hàng
+        </a>
+        <a href="~/Admin/NguoiDung" class="btn btn-outline-warning shadow-sm">
+            <i class="bi bi-people"></i> Quản lý người dùng
+        </a>
+        <a href="~/Admin/TheLoai" class="btn btn-outline-info shadow-sm">
+            <i class="bi bi-tags"></i> Quản lý thể loại
+        </a>
+        <a href="~/TaiKhoan/Logout" class="btn btn-outline-danger shadow-sm">
+            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-phone fs-1 mb-2"></i>
+                    <h5 class="card-title">Sản phẩm</h5>
+                    <h3 class="fw-bold">@ViewBag.SoSanPham</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-cart-check fs-1 mb-2"></i>
+                    <h5 class="card-title">Đơn hàng</h5>
+                    <h3 class="fw-bold">@ViewBag.SoDonHang</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-people fs-1 mb-2"></i>
+                    <h5 class="card-title">Người dùng</h5>
+                    <h3 class="fw-bold">@ViewBag.SoNguoiDung</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 bg-danger text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-currency-dollar fs-1 mb-2"></i>
+                    <h5 class="card-title">Doanh thu</h5>
+                    <h3 class="fw-bold">@String.Format("{0:N0} đ", ViewBag.DoanhThu)</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white fw-bold">
+            <i class="bi bi-graph-up"></i> Biểu đồ doanh thu 7 ngày gần đây
+        </div>
+        <div class="card-body">
+            <canvas id="revenueChart" height="100"></canvas>
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white fw-bold">
+            <i class="bi bi-box-seam"></i> Sản phẩm mới thêm gần đây
+        </div>
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Thương hiệu</th>
+                        <th>Ngày thêm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.SanPhamMoi != null)
+                    {
+                        int i = 1;
+                        foreach (var sp in ViewBag.SanPhamMoi)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@sp.TenSanPham</td>
+                                <td>@String.Format("{0:N0} đ", sp.Gia)</td>
+                                <td>@sp.ThuongHieu</td>
+                                <td>@(((DateTime)sp.NgayThem).ToString("dd/MM/yyyy"))</td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                Chưa có dữ liệu
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('revenueChart');
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.NgayDoanhThu)),
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.GiaTriDoanhThu)),
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.2)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}
+

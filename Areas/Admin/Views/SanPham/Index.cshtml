@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "Quản lý sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Linq
+@model IEnumerable<LTW.Models.SanPham>
+
+@section Styles {
+    <style>
+        .table th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .product-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+}
+
+<div class="container mt-4">
+    <h2 class="text-center text-primary mb-4">📦 Quản lý sản phẩm</h2>
+
+    <div class="text-end mb-3">
+        <a href="@Url.Action("ThemSanPham", "SanPham")" class="btn btn-success">
+            <i class="fa fa-plus"></i> Thêm sản phẩm mới
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-bordered table-hover table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:10%">Hình ảnh</th>
+                    <th style="width:25%">Tên sản phẩm</th>
+                    <th style="width:15%">Thương hiệu</th>
+                    <th style="width:15%">Giá (VNĐ)</th>
+                    <th style="width:10%">Số lượng</th>
+                    <th style="width:20%">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sp in Model)
+                {
+                    <tr>
+                        <td class="text-center">@sp.SanPhamID</td>
+                        <td class="text-center">
+                            @if (!string.IsNullOrEmpty(sp.HinhAnh1))
+                            {
+                                <img src="~/Content/Images/@sp.HinhAnh1" alt="@sp.TenSanPham" class="product-img" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có</span>
+                            }
+                        </td>
+                        <td>@sp.TenSanPham</td>
+                        <td>@sp.ThuongHieu</td>
+                        <td>@string.Format("{0:N0}", sp.Gia)</td>
+                        <td>@sp.SoLuong</td>
+                        <td class="text-center">
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })" class="btn btn-info btn-sm">
+                                <i class="fa fa-eye"></i> Xem
+                            </a>
+                            <a href="@Url.Action("SuaSanPham", "SanPham", new { id = sp.SanPhamID })" class="btn btn-warning btn-sm">
+                                <i class="fa fa-edit"></i> Sửa
+                            </a>
+                            <form action="@Url.Action("XoaSanPham", "SanPham", new { id = sp.SanPhamID })"
+                                  method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
+                                    <i class="fa fa-trash"></i> Xóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            Không có sản phẩm nào trong hệ thống.
+        </div>
+    }
+</div>

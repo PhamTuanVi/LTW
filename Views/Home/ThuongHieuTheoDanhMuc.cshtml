@@ -1,0 +1,18 @@
+﻿@model List<string>
+@{
+    var danhMucID = ViewBag.DanhMucID;
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="brand-list mt-2">
+        
+        @foreach (var th in Model)
+        {
+            <a href="@Url.Action("SanPhamTheoThuongHieu", "SanPham", new { danhMucID = danhMucID, thuongHieu = th })"
+               class="text-decoration-none text-primary mx-2">
+                🔹 @th
+            </a>
+        }
+    </div>
+}

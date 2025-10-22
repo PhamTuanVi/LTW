@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "DangNhap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+
+    <link href="~/Content/css/DangNhap.css" rel="stylesheet" />
+}
+
+<div class="register-wrapper">
+    <div class="register-container">
+        <h2>Đăng nhập tài khoản</h2>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert">@ViewBag.Error</div>
+        }
+
+        
+        @using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+        {
+            <div class="mb-3">
+                <label for="tenDangNhap" class="form-label">Tên đăng nhập hoặc Email</label>
+                <input type="text"
+                       name="tenDangNhap"
+                       id="tenDangNhap"
+                       class="form-control"
+                       required
+                       placeholder="Nhập tên đăng nhập hoặc Email..." />
+            </div>
+
+            <div class="mb-3">
+                <label for="matKhau" class="form-label">Mật khẩu</label>
+                <input type="password"
+                       name="matKhau"
+                       id="matKhau"
+                       class="form-control"
+                       required
+                       placeholder="Nhập mật khẩu..." />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+
+            
+            <a href="@Url.Action("DangKy", "TaiKhoan")" class="btn-link">
+                Chưa có tài khoản? Đăng ký ngay
+            </a>
+        }
+    </div>
+</div>

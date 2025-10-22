@@ -1,0 +1,27 @@
+﻿@model List<LTW.Models.SanPham>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row g-3 mt-2">
+        @foreach (var sp in Model)
+        {
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card h-100 product-card">
+                    <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">
+                        <img src="@Url.Content("~/Content/images/" + sp.HinhAnh1)" class="card-img-top" alt="@sp.TenSanPham" />
+                    </a>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">@sp.TenSanPham</h6>
+                        <p class="text-danger fw-bold mb-0">@string.Format("{0:N0}đ", sp.Gia)</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center mt-2">
+        <i class="fas fa-info-circle"></i> Hiện chưa có sản phẩm nào trong danh mục này.
+    </div>
+}

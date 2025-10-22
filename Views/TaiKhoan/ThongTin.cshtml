@@ -1,0 +1,112 @@
+﻿@model LTW.Models.TaiKhoan
+@{
+    ViewBag.Title = "ThongTin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <style>
+       
+        .profile-container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 16px;
+            background: var(--bg-secondary, #2e3440);
+            color: var(--text-primary, #f1f5f9);
+            box-shadow: 0 0 15px rgba(0,0,0,0.25);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+            .profile-header i {
+                font-size: 60px;
+                color: #4facfe;
+            }
+
+            .profile-header h2 {
+                margin: 10px 0 5px;
+                font-weight: 600;
+            }
+
+            .profile-header p {
+                color: #a0aec0;
+            }
+
+
+        .profile-content-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .profile-info {
+          
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 12px 18px;
+           
+            max-width: 500px;
+            width: 100%;
+        }
+           
+
+            .profile-info label {
+                color: #a0aec0;
+                font-weight: 500;
+            }
+
+            .profile-info div {
+                font-size: 16px;
+            }
+
+        .profile-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+            .profile-footer a {
+                background: #4facfe;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 8px;
+                text-decoration: none;
+                transition: background 0.3s;
+                margin: 0 5px; 
+            }
+
+                .profile-footer a:hover {
+                    background: #357ABD;
+                }
+           
+            .profile-footer + .profile-footer {
+                margin-top: 15px;
+            }
+    </style>
+}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <i class="fas fa-user-circle"></i>
+        <h2>@Model.HoTen</h2>
+        <p>@ViewBag.VaiTro</p>
+    </div>
+
+    <div class="profile-content-wrapper">
+        <div class="profile-info">
+            <label>Tên đăng nhập:</label> <div>@Model.TenDangNhap</div>
+            <label>Email:</label> <div>@Model.Email</div>
+            <label>Số điện thoại:</label> <div>@Model.SoDienThoai</div>
+            <label>Địa chỉ:</label> <div>@Model.DiaChi</div>
+        </div>
+    </div>
+    <div class="profile-footer">
+        <a href="@Url.Action("SuaThongTin", "TaiKhoan")"><i class="fas fa-edit"></i> Chỉnh sửa thông tin</a>
+    
+        <a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> Quay lại trang chủ</a>
+    </div>
+</div>

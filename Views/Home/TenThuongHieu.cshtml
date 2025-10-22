@@ -1,0 +1,61 @@
+﻿@model IEnumerable<LTW.Models.SanPham>
+@{
+    
+    var brandsInCategory = Model
+                            .Select(p => p.ThuongHieu)
+                            .Where(b => !string.IsNullOrEmpty(b))
+                            .Distinct()
+                            .OrderBy(brand => brand)
+                            .ToList();
+}
+
+@foreach (var brand in brandsInCategory)
+{
+    
+    var productsInBrand = Model
+                            .Where(p => p.ThuongHieu == brand)
+                            .OrderByDescending(p => p.NgayThem) 
+                            .Take(4)
+                            .ToList();
+
+    if (productsInBrand.Any())
+    {
+        <div class="col-12">
+            <h4 class="brand-subheader">@brand</h4>
+        </div>
+
+        <div class="col-12">
+            <div class="row g-4">
+                @foreach (var sanPham in productsInBrand)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            <div class="product-card-img">
+                                <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })">
+                                    <img src="@Url.Content("~/Content/images/" + sanPham.HinhAnh1)" alt="@sanPham.TenSanPham" class="card-img-top">
+                                </a>
+
+                            </div>
+                            <div class="product-card-body">
+                                <h5 class="product-title">
+                                    <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })" title="@sanPham.TenSanPham">@sanPham.TenSanPham</a>
+                                </h5>
+                                <div class="product-price">
+                                    <span class="new-price">@string.Format("{0:N0}đ", sanPham.Gia)</span>
+                                </div>
+                            </div>
+                            <div class="product-card-footer">
+                                <a href="@Url.Action("ThemGioHang", "GioHang", new { id = sanPham.SanPhamID })" class="btn btn-primary btn-add-to-cart">
+                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                </a>
+                                <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })" class="btn btn-outline-secondary btn-view-details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+} 
