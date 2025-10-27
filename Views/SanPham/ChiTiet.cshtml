@@ -1,0 +1,117 @@
+﻿@model LTW.Models.SanPham
+@{
+    ViewBag.Title = "ChiTiet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <style>
+        .text-gradient {
+            background: linear-gradient(90deg, #007bff, #6610f2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .quantity-input {
+            width: 70px;
+            text-align: center;
+        }
+
+        .btn-cart {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+            .btn-cart:hover {
+                background-color: #0056b3;
+                color: #fff;
+            }
+
+        .thumbnail-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+        }
+
+            .thumbnail-img.active {
+                border-color: #007bff;
+            }
+
+        .main-img {
+            max-height: 420px;
+            object-fit: contain;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+
+            <!-- Hình ảnh chính và thumbnails -->
+            <div class="col-md-5 bg-light d-flex flex-column align-items-center justify-content-center p-4">
+                <img id="mainImage" src="~/Content/Images/@Model.HinhAnh1"
+                     alt="@Model.TenSanPham"
+                     class="img-fluid rounded-4 shadow-sm border main-img" />
+
+                <div class="thumbnail-container">
+                    <img src="~/Content/Images/@Model.HinhAnh1" class="thumbnail-img active" onclick="changeImage(this)" />
+                    <img src="~/Content/Images/@Model.HinhAnh1" class="thumbnail-img" onclick="changeImage(this)" />
+                    <img src="~/Content/Images/@Model.HinhAnh1" class="thumbnail-img" onclick="changeImage(this)" />
+                    <img src="~/Content/Images/@Model.HinhAnh1" class="thumbnail-img" onclick="changeImage(this)" />
+                </div>
+            </div>
+
+            <!-- Thông tin sản phẩm -->
+            <div class="col-md-7 bg-white p-5">
+                <h2 class="fw-bold text-gradient mb-3">@Model.TenSanPham</h2>
+                <ul class="list-unstyled mb-4">
+                    <li><strong>Thương hiệu:</strong> <span class="text-muted">@Model.ThuongHieu</span></li>
+                    <li><strong>Giá:</strong> <span class="text-danger fw-bold fs-5">@Model.Gia.ToString("N0") ₫</span></li>
+                    <li><strong>Số lượng có sẵn:</strong> <span>@Model.SoLuong</span></li>
+                </ul>
+
+                <p class="text-secondary lh-lg" style="text-align: justify;">@Model.MoTa</p>
+
+                <hr class="my-4" />
+
+                <div class="mb-4 d-flex align-items-center gap-3">
+                    <input type="number" id="quantity" class="form-control quantity-input" min="1" value="1" max="@Model.SoLuong" />
+                    <button class="btn btn-cart fw-semibold" onclick="addToCart(@Model.SanPhamID)">
+                        <i class="bi bi-cart-plus-fill"></i> Thêm vào giỏ hàng
+                    </button>
+                </div>
+
+                <h5 class="fw-semibold text-dark mb-3">
+                    <i class="bi bi-gear-fill text-primary"></i> Chi tiết cấu hình
+                </h5>
+                <div id="chi-tiet-cau-hinh" class="p-3 rounded-3 bg-light border">
+                    @Html.Action("CauHinhPartial", "SanPham", new { id = Model.SanPhamID })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function changeImage(thumbnail) {
+            // đổi hình chính
+            document.getElementById('mainImage').src = thumbnail.src;
+
+            // highlight thumbnail
+            document.querySelectorAll('.thumbnail-img').forEach(img => img.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+       
+    </script>
+}

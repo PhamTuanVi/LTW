@@ -159,6 +159,7 @@
     <Compile Include="Controllers\GioHangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LienHeController.cs" />
+    <Compile Include="Controllers\SanPhamController.cs" />
     <Compile Include="Controllers\TaiKhoanController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -257,6 +258,8 @@
     <Content Include="Views\Home\Search.cshtml" />
     <Content Include="Views\GioHang\MiniCart.cshtml" />
     <Content Include="Views\Home\LocSanPham.cshtml" />
+    <Content Include="Views\SanPham\ChiTiet.cshtml" />
+    <Content Include="Views\SanPham\CauHinhPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
