@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var chiTiets = ViewBag.ChiTiets as List<LTW.Models.GioHangChiTiet>;
+    var sanPhams = ViewBag.SanPhams as List<LTW.Models.SanPham>;
+}
+@section Styles {
+    <style>
+        .main-cart {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
+            .cart-item img {
+                width: 80px;
+                height: 80px;
+                border-radius: 10px;
+                margin-right: 15px;
+                object-fit: cover;
+            }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+            .quantity-btn:hover {
+                background-color: #0056b3;
+            }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 3px;
+        }
+
+        .btn-remove {
+            color: #e83e8c;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+            .btn-remove:hover {
+                color: #c2185b;
+            }
+
+        .cart-total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: 700;
+            color: #e83e8c;
+            margin-top: 20px;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .btn-clear, .btn-checkout {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-clear {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+            .btn-clear:hover {
+                background-color: #f5c2c7;
+            }
+
+        .btn-checkout {
+            background-color: #28a745;
+            color: white;
+        }
+
+            .btn-checkout:hover {
+                background-color: #218838;
+            }
+    </style>
+}
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null || ViewBag.Message != null)
+{
+    string message = TempData["SuccessMessage"] ?? TempData["ErrorMessage"] ?? ViewBag.Message;
+    string alertClass = TempData["ErrorMessage"] != null ? "alert-danger" : "alert-success";
+
+    <div class="alert @alertClass alert-dismissible fade show mt-3" role="alert">
+        <i class="fas @(TempData["ErrorMessage"] != null ? "fa-exclamation-circle" : "fa-check-circle") me-2"></i>
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="main-cart">
+    <h3 class="mb-4"><i class="fas fa-shopping-cart"></i> Giỏ hàng của bạn</h3>
+
+    @if (chiTiets == null || !chiTiets.Any())
+    {
+        <div class="text-center text-muted py-5">
+            <i class="fas fa-box-open fa-3x mb-2"></i>
+            <p>Giỏ hàng trống</p>
+        </div>
+    }
+    else
+    {
+        decimal tongTien = 0;
+
+        foreach (var ct in chiTiets)
+        {
+            var sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+            if (sp != null)
+            {
+                tongTien += sp.Gia * ct.SoLuong;
+                var thanhTien = sp.Gia * ct.SoLuong;
+                <div class="cart-item">
+                    <img src="~/Content/Images/@sp.HinhAnh1" alt="@sp.TenSanPham" />
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">@sp.TenSanPham</div>
+                        <div class="text-muted">@String.Format("{0:N0}₫ / sản phẩm", sp.Gia)</div>
+                    </div>
+                    <div class="cart-item-actions">
+                        <form method="post" action="@Url.Action("CapNhatSoLuong", "GioHang")" class="d-flex align-items-center">
+                            <input type="hidden" name="id" value="@sp.SanPhamID" />
+                            <button type="submit" name="actionType" value="minus" class="quantity-btn">−</button>
+                            <input type="text" value="@ct.SoLuong" class="quantity-input mx-2" readonly />
+                            <button type="submit" name="actionType" value="plus" class="quantity-btn">+</button>
+                        </form>
+                        <div class="cart-item-price fw-bold text-primary ms-2">@String.Format("{0:N0}₫", thanhTien)</div>
+                        <form method="post" action="@Url.Action("XoaMotSanPham", "GioHang")">
+                            <input type="hidden" name="id" value="@sp.SanPhamID" />
+                            <button type="submit" class="btn-clear"><i class="fas fa-trash-alt"></i> Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+
+        <div class="cart-total">
+            Tổng cộng: @String.Format("{0:N0}₫", tongTien)
+        </div>
+
+        <div class="cart-actions">
+            <form method="post" action="@Url.Action("XoaTatCa", "GioHang")">
+                <button type="submit" class="btn-clear"><i class="fas fa-trash-alt"></i> Xóa tất cả</button>
+            </form>
+            <a href="@Url.Action("ThanhToan", "GioHang")" class="btn-checkout">
+                <i class="fas fa-credit-card"></i> Thanh toán
+            </a>
+        </div>
+    }
+</div>

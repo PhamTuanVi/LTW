@@ -260,6 +260,7 @@
     <Content Include="Views\Home\LocSanPham.cshtml" />
     <Content Include="Views\SanPham\ChiTiet.cshtml" />
     <Content Include="Views\SanPham\CauHinhPartial.cshtml" />
+    <Content Include="Views\GioHang\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

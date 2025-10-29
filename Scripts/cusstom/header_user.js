@@ -40,3 +40,6 @@ function closeMenu(menuId) {
     }
 }
 
+document.querySelectorAll('.cart-list').forEach(list => {
+    list.style.scrollBehavior = 'smooth';
+});

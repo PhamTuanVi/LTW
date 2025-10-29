@@ -53,6 +53,14 @@
 }
 
 <div class="container py-5">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
         <div class="row g-0">
 
@@ -84,10 +92,16 @@
                 <hr class="my-4" />
 
                 <div class="mb-4 d-flex align-items-center gap-3">
-                    <input type="number" id="quantity" class="form-control quantity-input" min="1" value="1" max="@Model.SoLuong" />
-                    <button class="btn btn-cart fw-semibold" onclick="addToCart(@Model.SanPhamID)">
-                        <i class="bi bi-cart-plus-fill"></i> Thêm vào giỏ hàng
-                    </button>
+                    <form method="post" action="@Url.Action("ThemVaoGio", "GioHang")">
+                        <input type="hidden" name="sanPhamId" value="@Model.SanPhamID" />
+
+                        <div class="mb-4 d-flex align-items-center gap-3">
+                            <input type="number" name="soLuong" class="form-control quantity-input" min="1" value="1" max="@Model.SoLuong" />
+                            <button type="submit" class="btn btn-cart fw-semibold">
+                                <i class="bi bi-cart-plus-fill"></i> Thêm vào giỏ hàng
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <h5 class="fw-semibold text-dark mb-3">

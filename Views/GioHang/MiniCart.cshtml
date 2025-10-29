@@ -3,6 +3,157 @@
     var sanPhams = ViewBag.SanPhams as List<LTW.Models.SanPham>;
 }
 
+<style>
+    .empty-state {
+        text-align: center;
+        padding: 30px;
+        color: #777;
+    }
+
+        .empty-state i {
+            font-size: 50px;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+    .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 2px solid #f1f1f1;
+        background: #f8f9fa;
+        border-radius: 10px 10px 0 0;
+    }
+
+        .cart-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+    .cart-count {
+        font-size: 14px;
+        color: #888;
+    }
+
+    .cart-list {
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px 15px;
+        background: #fff;
+        border: 1px solid #eee;
+        border-top: none;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #f1f1f1;
+        padding-bottom: 8px;
+    }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img.thumbnail-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 12px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+    .cart-item-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .cart-item-name {
+        font-size: 15px;
+        font-weight: 500;
+        color: #222;
+        margin-bottom: 4px;
+    }
+
+    .cart-item-quantity {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 4px;
+    }
+
+    .cart-item-price {
+        font-size: 14px;
+        color: #007bff;
+        font-weight: 600;
+    }
+
+    .cart-footer {
+        padding: 12px 15px;
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .cart-footer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .cart-total {
+        font-weight: 600;
+        font-size: 15px;
+        color: #333;
+    }
+
+    .cart-total-price {
+        font-size: 16px;
+        font-weight: bold;
+        color: #e83e8c;
+    }
+
+    .btn-checkout {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        font-size: 14px;
+    }
+
+        .btn-checkout i {
+            margin-right: 5px;
+        }
+
+        .btn-checkout:hover {
+            background-color: #0056b3;
+        }
+
+    .cart-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .cart-list::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+        .cart-list::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+</style>
+
 @if (chiTiets == null || !chiTiets.Any())
 {
     <div class="empty-state">
@@ -18,7 +169,6 @@ else
     foreach (var ct in chiTiets)
     {
         tongSoLuong += ct.SoLuong;
-
         LTW.Models.SanPham sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
         if (sp != null)
         {
@@ -37,11 +187,16 @@ else
             LTW.Models.SanPham sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
             if (sp != null)
             {
+                var thanhTien = sp.Gia * ct.SoLuong;
                 <div class="cart-item">
-                    <img src="@Url.Content(sp.HinhAnh1)" class="cart-item-image" />
+                    <img src="~/Content/Images/@sp.HinhAnh1" class="thumbnail-img active" />
+
                     <div class="cart-item-info">
                         <div class="cart-item-name">@sp.TenSanPham</div>
-                        <div class="cart-item-price">@String.Format("{0:N0}₫", sp.Gia * ct.SoLuong)</div>
+                        <div class="cart-item-quantity">Số lượng: @ct.SoLuong</div>
+                        <div class="cart-item-price fw-bold text-primary ms-2">
+                            @String.Format("{0:N0}₫", thanhTien)
+                        </div>
                     </div>
                 </div>
             }
