@@ -267,6 +267,7 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\Admin\Views\TaiKhoan\" />
+    <Folder Include="Content\avatars\" />
     <Folder Include="Content\Images\" />
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.IO;
 
 namespace LTW.Controllers
 {
@@ -52,6 +53,7 @@ namespace LTW.Controllers
                 Session["roleid"] = nguoidung.VaiTroID;
                 Session["rolename"] = vaitro?.TenVaiTro ?? "User";
                 Session["ten"] = nguoidung.HoTen;
+                Session["avarta"] = nguoidung.Avatar;
 
                 
                 if (Session["rolename"].ToString() == "Admin")
@@ -174,7 +176,7 @@ namespace LTW.Controllers
         }
 
         [HttpPost]
-        public ActionResult SuaThongTin(TaiKhoan model)
+        public ActionResult SuaThongTin(TaiKhoan model, HttpPostedFileBase avatarFile)
         {
             if (Session["userid"] == null)
             {
@@ -182,29 +184,66 @@ namespace LTW.Controllers
             }
 
             int userId = Convert.ToInt32(Session["userid"]);
+            string avatarFileName = null;
+            if (avatarFile != null && avatarFile.ContentLength > 0)
+            {
+                string folderPath = Server.MapPath("~/Content/avatars/");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                avatarFileName = Path.GetFileName(avatarFile.FileName);
+                string savePath = Path.Combine(folderPath, avatarFileName);
+                avatarFile.SaveAs(savePath);
+            }
 
             using (SqlConnection con = DBConnect.GetConnection())
             {
-                string sql = @"UPDATE TaiKhoan 
-                       SET HoTen = @HoTen,
-                           Email = @Email,
-                           SoDienThoai = @SoDienThoai,
-                           DiaChi = @DiaChi
-                       WHERE TaiKhoanID = @TaiKhoanID";
+                string sql;
+                if (avatarFileName != null)
+                {
+                    
+                    sql = @"UPDATE TaiKhoan
+            SET HoTen = @HoTen,
+                Email = @Email,
+                SoDienThoai = @SoDienThoai,
+                DiaChi = @DiaChi,
+                Avatar = @Avatar
+            WHERE TaiKhoanID = @TaiKhoanID";
+                }
+                else
+                {
+                    
+                    sql = @"UPDATE TaiKhoan
+            SET HoTen = @HoTen,
+                Email = @Email,
+                SoDienThoai = @SoDienThoai,
+                DiaChi = @DiaChi
+            WHERE TaiKhoanID = @TaiKhoanID";
+                }
 
                 using (SqlCommand cmd = new SqlCommand(sql, con))
                 {
-                    cmd.Parameters.AddWithValue("@HoTen", model.HoTen ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Email", model.Email ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@SoDienThoai", model.SoDienThoai ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DiaChi", model.DiaChi ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@HoTen", (object)model.HoTen ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Email", (object)model.Email ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@SoDienThoai", (object)model.SoDienThoai ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DiaChi", (object)model.DiaChi ?? DBNull.Value);
+                    if (avatarFileName != null)
+                    {
+                        cmd.Parameters.AddWithValue("@Avatar", avatarFileName);
+                    }    
+                        
                     cmd.Parameters.AddWithValue("@TaiKhoanID", userId);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
                 }
             }
-
+            if (avatarFileName != null)
+            {
+                Session["avarta"] = avatarFileName;
+            }
             TempData["Success"] = "Cập nhật thông tin thành công!";
             return RedirectToAction("ThongTin");
         }

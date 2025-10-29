@@ -17,13 +17,13 @@ namespace LTW.Models
         public string SoDienThoai { get; set; }
         public string DiaChi { get; set; }
         public int VaiTroID { get; set; }
-        
 
-        
+        public string Avatar { get; set; }
 
-        
 
-       
+
+
+
     }
     public class TaiKhoanData
     {
@@ -52,7 +52,8 @@ namespace LTW.Models
                         MatKhau = dr["MatKhau"].ToString(),
                         SoDienThoai = dr["SoDienThoai"].ToString(),
                         DiaChi = dr["DiaChi"].ToString(),
-                        VaiTroID = Convert.ToInt32(dr["VaiTroID"])
+                        VaiTroID = Convert.ToInt32(dr["VaiTroID"]),
+                        Avatar = dr["Avatar"].ToString()
                     };
                     dsTaiKhoan.Add(tk);
                 }
@@ -81,6 +82,7 @@ namespace LTW.Models
                     cmd.Parameters.AddWithValue("@SoDienThoai", tk.SoDienThoai ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@DiaChi", tk.DiaChi ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@VaiTroID", tk.VaiTroID);
+                    cmd.Parameters.AddWithValue("@Avatar", tk.Avatar ?? (object)DBNull.Value);
 
                     con.Open();
                     try

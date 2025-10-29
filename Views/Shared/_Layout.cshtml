@@ -3,6 +3,7 @@
 @{
     var hoTen = Session["ten"] as string;
     var role = Session["rolename"] as string;
+    var ava = Session["avarta"] as string;
     var danhMucData = new DanhMucData();
     var dsDanhMuc = danhMucData.dsDanhMuc;
 }
@@ -52,7 +53,15 @@
 
                 <div class="user-avatar-container">
                     <div class="user-avatar" id="user-avatar-toggle" title="Tài khoản" style="cursor: pointer;">
-                        <i class="fas fa-user"></i>
+                        @if (!string.IsNullOrEmpty(ava))
+                        {
+                            <img src="@Url.Content("~/Content/avatars/" + ava)" alt="Avatar" class="rounded-circle"
+                                 style="width: 35px; height: 35px; object-fit: cover; border: 2px solid #ccc;" />
+                        }
+                        else
+                        {
+                            <i class="fas fa-user"></i>
+                        }
                     </div>
 
                     <div class="user-menu" id="user-menu">
@@ -94,7 +103,7 @@
                         }
                     </div>
                 </div>
-                <!--giỏ hàng-->
+                
 
                 @if (role != "Admin")
                 {

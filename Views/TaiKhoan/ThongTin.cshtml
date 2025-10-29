@@ -91,7 +91,17 @@
 
 <div class="profile-container">
     <div class="profile-header">
-        <i class="fas fa-user-circle"></i>
+        @if (!string.IsNullOrEmpty(Session["avarta"] as string))
+        {
+            <img src="@Url.Content("~/Content/avatars/" + Session["avarta"])"
+                 alt="Avatar" class="rounded-circle mb-2"
+                 style="width:100px; height:100px; object-fit:cover; border:3px solid #4facfe;" />
+        }
+        else
+        {
+            <i class="fas fa-user-circle"></i>
+        }
+
         <h2>@Model.HoTen</h2>
         <p>@ViewBag.VaiTro</p>
     </div>
