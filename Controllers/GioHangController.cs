@@ -122,31 +122,56 @@ namespace LTW.Controllers
                 }
             }
 
-            
+
             using (var con = DBConnect.GetConnection())
             {
-                string sql = @"INSERT INTO GioHangChiTiet (GioHangID, SanPhamID, SoLuong, NgayTao) 
-                       VALUES (@GioHangID, @SanPhamID, @SoLuong, GETDATE())";
-                using (var cmd = new System.Data.SqlClient.SqlCommand(sql, con))
-                {
-                    cmd.Parameters.AddWithValue("@GioHangID", gioHang.GioHangID);
-                    cmd.Parameters.AddWithValue("@SanPhamID", sanPhamId);
-                    cmd.Parameters.AddWithValue("@SoLuong", soLuong);
+                con.Open();
 
-                    con.Open();
-                    try
+                
+                string checkSql = @"SELECT SoLuong FROM GioHangChiTiet 
+                            WHERE GioHangID = @GioHangID AND SanPhamID = @SanPhamID";
+                using (var checkCmd = new System.Data.SqlClient.SqlCommand(checkSql, con))
+                {
+                    checkCmd.Parameters.AddWithValue("@GioHangID", gioHang.GioHangID);
+                    checkCmd.Parameters.AddWithValue("@SanPhamID", sanPhamId);
+
+                    var datontai = checkCmd.ExecuteScalar();
+
+                    if (datontai != null)
                     {
-                        cmd.ExecuteNonQuery();
-                        TempData["SuccessMessage"] = "Đã thêm sản phẩm vào giỏ hàng!";
+                        
+                        int themsoluong = Convert.ToInt32(datontai) + soLuong;
+                        string updateSql = @"UPDATE GioHangChiTiet 
+                                     SET SoLuong = @SoLuong 
+                                     WHERE GioHangID = @GioHangID AND SanPhamID = @SanPhamID";
+                        using (var updateCmd = new System.Data.SqlClient.SqlCommand(updateSql, con))
+                        {
+                            updateCmd.Parameters.AddWithValue("@SoLuong", themsoluong);
+                            updateCmd.Parameters.AddWithValue("@GioHangID", gioHang.GioHangID);
+                            updateCmd.Parameters.AddWithValue("@SanPhamID", sanPhamId);
+                            updateCmd.ExecuteNonQuery();
+                        }
+
+                        TempData["SuccessMessage"] = "Đã cập nhật số lượng sản phẩm trong giỏ hàng!";
                     }
-                    catch (System.Data.SqlClient.SqlException ex)
+                    else
                     {
-                        TempData["ErrorMessage"] = ex.Message;
+                        
+                        string insertSql = @"INSERT INTO GioHangChiTiet (GioHangID, SanPhamID, SoLuong, NgayTao) 
+                                     VALUES (@GioHangID, @SanPhamID, @SoLuong, GETDATE())";
+                        using (var insertCmd = new System.Data.SqlClient.SqlCommand(insertSql, con))
+                        {
+                            insertCmd.Parameters.AddWithValue("@GioHangID", gioHang.GioHangID);
+                            insertCmd.Parameters.AddWithValue("@SanPhamID", sanPhamId);
+                            insertCmd.Parameters.AddWithValue("@SoLuong", soLuong);
+                            insertCmd.ExecuteNonQuery();
+                        }
+
+                        TempData["SuccessMessage"] = "Đã thêm sản phẩm vào giỏ hàng!";
                     }
                 }
             }
-
-            return RedirectToAction("ChiTiet", "SanPham", new { id = sanPhamId });
+                return RedirectToAction("ChiTiet", "SanPham", new { id = sanPhamId });
         }
         public ActionResult MiniCart()
         {

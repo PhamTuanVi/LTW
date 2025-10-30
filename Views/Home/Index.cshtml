@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var sanPhamMoi = ViewBag.SanPhamMoi as List<LTW.Models.SanPham>;
     var dsDanhMuc = ViewBag.DanhSachDanhMuc as List<LTW.Models.DanhMuc>;
+    
 }
 @section Styles {
     <link href="@Url.Content("~/Content/css/product_card.css?v=" + DateTime.Now.Ticks)" rel="stylesheet" />
@@ -189,9 +190,13 @@
                             </div>
                         </div>
                         <div class="product-card-footer">
-                            <a href="@Url.Action("ThemGioHang", "GioHang", new { id = sanPham.SanPhamID })" class="btn btn-primary btn-add-to-cart">
-                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ
-                            </a>
+                            <form action="@Url.Action("ThemVaoGio", "GioHang")" method="post" style="display:inline;">
+                                <input type="hidden" name="sanPhamId" value="@sanPham.SanPhamID" />
+                                <input type="hidden" name="soLuong" value="1" />
+                                <button type="submit" class="btn btn-primary btn-add-to-cart">
+                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                </button>
+                            </form>
                             <a href="@Url.Action("ChiTiet", "SanPham", new { id = sanPham.SanPhamID })" class="btn btn-outline-secondary btn-view-details">
                                 <i class="fas fa-eye"></i>
                             </a>

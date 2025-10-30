@@ -303,7 +303,7 @@
             track.style.right = (100 - percentMax) + "%";
         }
 
-        // Giữ khoảng cách tối thiểu 1 triệu
+    
         minRange.addEventListener("input", () => {
             if (+minRange.value >= +maxRange.value - 1000000)
                 minRange.value = +maxRange.value - 1000000;
