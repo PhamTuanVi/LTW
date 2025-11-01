@@ -45,14 +45,22 @@ namespace LTW.Controllers
             ViewBag.DanhMucID = id;
             return PartialView(thuongHieus);
         }
-        public ActionResult SanPhamTheoDanhMucPartial(int id)
+        public ActionResult SanPhamTheoDanhMucPartial(int id) 
+        { 
+            var spData = new SanPhamData(); 
+            var lstSp = spData.dsSanPham.Where(sp => sp.DanhMucID == id).ToList(); 
+            return PartialView(lstSp); 
+        }
+        public ActionResult SanPhamTheoThuongHieu(int danhMucID, string thuongHieu)
         {
             var spData = new SanPhamData();
-            var lstSp = spData.dsSanPham
-                .Where(sp => sp.DanhMucID == id)
+            var ds = spData.dsSanPham
+                .Where(s => s.DanhMucID == danhMucID && s.ThuongHieu == thuongHieu)
                 .ToList();
 
-            return PartialView(lstSp);
+            ViewBag.DanhMucID = danhMucID;
+            ViewBag.ThuongHieu = thuongHieu;
+            return View(ds);
         }
         public ActionResult LocTheoDanhMuc(int id)
         {

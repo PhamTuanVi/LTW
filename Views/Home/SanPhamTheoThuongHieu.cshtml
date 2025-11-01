@@ -1,0 +1,74 @@
+﻿@model IEnumerable<LTW.Models.SanPham>
+
+@{
+    ViewBag.Title = "Sản phẩm theo thương hiệu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="@Url.Content("~/Content/css/product_card.css?v=" + DateTime.Now.Ticks)" rel="stylesheet" />
+}
+
+<div class="container mt-4">
+    <h3 class="text-primary text-center mb-4">
+        Sản phẩm thương hiệu <strong>@ViewBag.ThuongHieu</strong>
+        
+    </h3>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var sp in Model)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-card-img">
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">
+                                <img src="@Url.Content("~/Content/images/" + sp.HinhAnh1)"
+                                     alt="@sp.TenSanPham" class="card-img-top" />
+                            </a>
+                            <div class="product-badge new-badge">Hot</div>
+                        </div>
+
+                        <div class="product-card-body">
+                            <h5 class="product-title">
+                                <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })"
+                                   title="@sp.TenSanPham">@sp.TenSanPham</a>
+                            </h5>
+                            <div class="product-price">
+                                <span class="new-price">@string.Format("{0:N0}đ", sp.Gia)</span>
+                            </div>
+                            <div class="text-muted small">Thương hiệu: @sp.ThuongHieu</div>
+                        </div>
+
+                        <div class="product-card-footer">
+                            <form action="@Url.Action("ThemVaoGio", "GioHang")" method="post" style="display:inline;">
+                                <input type="hidden" name="sanPhamId" value="@sp.SanPhamID" />
+                                <input type="hidden" name="soLuong" value="1" />
+                                <button type="submit" class="btn btn-primary btn-add-to-cart">
+                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                </button>
+                            </form>
+                            <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })"
+                               class="btn btn-outline-secondary btn-view-details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center mt-3">
+            <i class="fas fa-info-circle"></i> Không có sản phẩm nào thuộc thương hiệu này.
+        </div>
+    }
+
+    <div class="mt-4 text-center">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+        </a>
+    </div>
+</div>
