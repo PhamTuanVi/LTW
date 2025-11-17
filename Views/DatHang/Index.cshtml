@@ -1,0 +1,476 @@
+﻿@{
+    ViewBag.Title = "Đặt hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var chiTiets = ViewBag.ChiTiets as List<LTW.Models.GioHangChiTiet>;
+    var sanPhams = ViewBag.SanPhams as List<LTW.Models.SanPham>;
+    string hoTen = ViewBag.HoTen as string ?? "";
+    string soDienThoai = ViewBag.SoDienThoai as string ?? "";
+    string diaChi = ViewBag.DiaChi as string ?? "";
+}
+
+@section Styles {
+    <style>
+        .order-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 15px;
+        }
+
+        .order-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .order-info, .order-summary {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+            .form-label .required {
+                color: #e83e8c;
+            }
+
+        /* ⭐ Style cho field readonly */
+        .form-control-readonly {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            color: #6c757d;
+        }
+
+        .info-note {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .info-note i {
+                color: #007bff;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0,123,255,0.3);
+            }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+            .order-item:last-child {
+                border-bottom: none;
+            }
+
+            .order-item img {
+                width: 70px;
+                height: 70px;
+                border-radius: 8px;
+                margin-right: 15px;
+                object-fit: cover;
+            }
+
+        .order-item-info {
+            flex: 1;
+        }
+
+        .order-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .order-item-quantity {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .order-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #007bff;
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .total-label {
+            color: #333;
+        }
+
+        .total-price {
+            color: #e83e8c;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .payment-option:hover {
+                border-color: #007bff;
+                background: #f0f8ff;
+            }
+
+            .payment-option input[type="radio"] {
+                margin-right: 10px;
+                cursor: pointer;
+            }
+
+            .payment-option i {
+                margin-right: 8px;
+                font-size: 18px;
+            }
+
+        .btn-order {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+            .btn-order:hover {
+                background: #218838;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            transition: 0.3s;
+            text-align: center;
+            display: block;
+        }
+
+            .btn-back:hover {
+                background: #5a6268;
+                color: white;
+                text-decoration: none;
+            }
+
+        /* ⭐ Empty cart message */
+        .empty-cart {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6c757d;
+        }
+
+            .empty-cart i {
+                font-size: 64px;
+                color: #dee2e6;
+                margin-bottom: 20px;
+            }
+
+            .empty-cart h3 {
+                margin-bottom: 10px;
+                color: #495057;
+            }
+
+            .empty-cart p {
+                margin-bottom: 20px;
+            }
+
+        .btn-shopping {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+            .btn-shopping:hover {
+                background: #0056b3;
+                color: white;
+                text-decoration: none;
+            }
+
+        @@media (max-width: 768px) {
+            .order-content {
+                grid-template-columns: 1fr;
+            }
+
+            .order-title {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+{
+    string message = (TempData["SuccessMessage"] as string) ?? (TempData["ErrorMessage"] as string) ?? "";
+    string alertClass = TempData["ErrorMessage"] != null ? "alert-danger" : "alert-success";
+
+    <div class="alert @alertClass alert-dismissible fade show mt-3" role="alert">
+        <i class="fas @(TempData["ErrorMessage"] != null ? "fa-exclamation-circle" : "fa-check-circle") me-2"></i>
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="order-container">
+    <h2 class="order-title"><i class="fas fa-clipboard-check"></i> Xác nhận đặt hàng</h2>
+
+    @if (chiTiets == null || !chiTiets.Any())
+    {
+        <!-- ⭐ Hiển thị khi giỏ hàng trống -->
+        <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Giỏ hàng của bạn đang trống</h3>
+            <p>Hãy thêm sản phẩm vào giỏ hàng để tiếp tục đặt hàng</p>
+            <a href="@Url.Action("Index", "Home")" class="btn-shopping">
+                <i class="fas fa-shopping-bag"></i> Tiếp tục mua sắm
+            </a>
+        </div>
+    }
+    else
+    {
+        <form method="post" action="@Url.Action("XacNhanDatHang", "DatHang")">
+            <div class="order-content">
+                <div class="order-info">
+                    <h3 class="section-title">Thông tin giao hàng</h3>
+
+                    <!-- ⭐ Họ tên: READ-ONLY (lấy từ TaiKhoan) -->
+                    <div class="form-group">
+                        <label class="form-label">Họ tên</label>
+                        <input type="text" class="form-control form-control-readonly"
+                               value="@hoTen" readonly />
+                        <div class="info-note">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Họ tên được lấy từ tài khoản của bạn</span>
+                        </div>
+                    </div>
+
+                    <!-- ⭐ Số điện thoại: CÓ THỂ SỬA (lưu vào DonHang) -->
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại <span class="required">*</span></label>
+                        <input type="tel" name="soDienThoai" class="form-control"
+                               value="@soDienThoai"
+                               placeholder="Nhập số điện thoại"
+                               pattern="[0-9+]{10,12}"
+                               title="Số điện thoại phải có 10-12 chữ số"
+                               required />
+                    </div>
+
+                    <!-- ⭐ Địa chỉ: CÓ THỂ SỬA (lưu vào DonHang) -->
+                    <div class="form-group">
+                        <label class="form-label">Địa chỉ giao hàng <span class="required">*</span></label>
+                        <textarea name="diaChi" class="form-control"
+                                  placeholder="Nhập địa chỉ chi tiết (số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố)"
+                                  rows="3"
+                                  required>@diaChi</textarea>
+                        <div class="info-note">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Bạn có thể thay đổi địa chỉ giao hàng khác với địa chỉ trong tài khoản</span>
+                        </div>
+                    </div>
+
+                    <!-- ⭐ Ghi chú -->
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú đơn hàng</label>
+                        <textarea name="ghiChu" class="form-control"
+                                  placeholder="VD: Giao hàng giờ hành chính, gọi trước 30 phút..."
+                                  rows="2"></textarea>
+                    </div>
+
+                    <!-- ⭐ Phương thức thanh toán -->
+                    <div class="form-group">
+                        <label class="form-label">Phương thức thanh toán <span class="required">*</span></label>
+                        <div class="payment-methods">
+                            <label class="payment-option">
+                                <input type="radio" name="phuongThucThanhToan" value="Tiền mặt" checked required />
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Thanh toán khi nhận hàng (COD)</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="phuongThucThanhToan" value="Chuyển khoản" required />
+                                <i class="fas fa-university"></i>
+                                <span>Chuyển khoản ngân hàng</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="phuongThucThanhToan" value="Ví điện tử" required />
+                                <i class="fas fa-wallet"></i>
+                                <span>Ví điện tử (Momo, ZaloPay)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ⭐ Tóm tắt đơn hàng -->
+                <div class="order-summary">
+                    <h3 class="section-title">Đơn hàng của bạn</h3>
+
+                    @{
+                        decimal tongTien = 0;
+
+                        foreach (var ct in chiTiets)
+                        {
+                            var sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+                            if (sp != null)
+                            {
+                                tongTien += sp.Gia * ct.SoLuong;
+                                var thanhTien = sp.Gia * ct.SoLuong;
+
+                                <div class="order-item">
+                                    <img src="~/Content/Images/@sp.HinhAnh1"
+                                         alt="@sp.TenSanPham"
+                                         onerror="this.src='/Content/Images/no-image.png'" />
+                                    <div class="order-item-info">
+                                        <div class="order-item-name">@sp.TenSanPham</div>
+                                        <div class="order-item-quantity">
+                                            <i class="fas fa-boxes"></i> Số lượng: @ct.SoLuong
+                                        </div>
+                                    </div>
+                                    <div class="order-item-price">@String.Format("{0:N0}₫", thanhTien)</div>
+                                </div>
+                            }
+                        }
+
+                        <div class="order-total">
+                            <span class="total-label">Tổng cộng:</span>
+                            <span class="total-price">@String.Format("{0:N0}₫", tongTien)</span>
+                        </div>
+                    }
+
+                    <!-- ⭐ Button đặt hàng -->
+                    <button type="submit" class="btn-order">
+                        <i class="fas fa-check-circle"></i> Xác nhận đặt hàng
+                    </button>
+
+                    <!-- ⭐ Button quay lại -->
+                    <a href="@Url.Action("Index", "GioHang")" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+                    </a>
+                </div>
+            </div>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // ⭐ Validation form trước khi submit
+        document.querySelector('form')?.addEventListener('submit', function (e) {
+            const sdt = document.querySelector('input[name="soDienThoai"]').value;
+            const diaChi = document.querySelector('textarea[name="diaChi"]').value;
+
+            // Kiểm tra số điện thoại
+            if (!/^[0-9+]{10,12}$/.test(sdt)) {
+                e.preventDefault();
+                alert('⚠️ Số điện thoại không hợp lệ! Vui lòng nhập 10-12 chữ số.');
+                return false;
+            }
+
+            // Kiểm tra địa chỉ
+            if (diaChi.trim().length < 10) {
+                e.preventDefault();
+                alert('⚠️ Địa chỉ quá ngắn! Vui lòng nhập địa chỉ chi tiết.');
+                return false;
+            }
+
+            // Confirm đặt hàng
+            if (!confirm('✅ Xác nhận đặt hàng?\n\nVui lòng kiểm tra lại thông tin trước khi xác nhận.')) {
+                e.preventDefault();
+                return false;
+            }
+
+            return true;
+        });
+
+        // ⭐ Auto-dismiss alert sau 5 giây
+        setTimeout(function () {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 5000);
+    </script>
+}

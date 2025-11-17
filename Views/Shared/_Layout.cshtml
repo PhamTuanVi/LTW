@@ -28,7 +28,7 @@
 </head>
 <body data-theme="dark">
 
-   
+
     <header class="header-top">
         <div class="header-container">
             <a href="@Url.Action("Index", "Home")" class="logo">
@@ -98,12 +98,15 @@
                                 </div>
                                 <div class="user-menu-divider"></div>
                                 <a href="@Url.Action("ThongTin","TaiKhoan")"><i class="fas fa-user-circle"></i> Hồ sơ cá nhân</a>
+                                //Thêm đơn hàng của tôi
+                                <a href="@Url.Action("DonHangDaDat","DatHang")"><i class="fas fa-clipboard-list"></i> Đơn hàng của tôi</a>
+
                                 <a href="@Url.Action("Logout","TaiKhoan")"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                             }
                         }
                     </div>
                 </div>
-                
+
 
                 @if (role != "Admin")
                 {
@@ -120,17 +123,17 @@
                                     <p>Đăng nhập để xem giỏ hàng và thanh toán</p>
                                     <div class="empty-state-actions">
                                         <a href="@Url.Action("DangNhap","TaiKhoan")" class="btn-primary">
-                                             Đăng nhập
+                                            Đăng nhập
                                         </a>
                                         <a href="@Url.Action("DangKy","TaiKhoan")" class="btn-secondary">
-                                             Đăng ký
+                                            Đăng ký
                                         </a>
                                     </div>
                                 </div>
                             }
                             else
                             {
-                                @Html.Action("MiniCart", "GioHang") 
+                                @Html.Action("MiniCart", "GioHang")
                             }
                         </div>
                     </div>
@@ -138,14 +141,14 @@
 
             </div>
 
-           
+
             <button class="mobile-menu-toggle" id="mobileMenuToggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </header>
 
- 
+
     <nav class="header-nav">
         <div class="nav-container">
             <div class="nav-menu" id="navMenu">

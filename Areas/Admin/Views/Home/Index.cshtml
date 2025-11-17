@@ -16,7 +16,6 @@
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
-
     </style>
 }
 <div class="container-fluid mt-4">
@@ -28,8 +27,21 @@
         <a href="~/Admin/SanPham" class="btn btn-outline-primary shadow-sm">
             <i class="bi bi-box"></i> Quản lý sản phẩm
         </a>
-        <a href="~/Admin/DonHang" class="btn btn-outline-success shadow-sm">
+        <!-- ⭐ LINK QUẢN LÝ ĐƠN HÀNG -->
+        <a href="~/Admin/QuanLyDonHang/Index" class="btn btn-outline-success shadow-sm position-relative">
             <i class="bi bi-cart4"></i> Quản lý đơn hàng
+            @if (ViewBag.DonChoXuLy != null && ViewBag.DonChoXuLy > 0)
+            {
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    @ViewBag.DonChoXuLy
+                    <span class="visually-hidden">đơn chờ xử lý</span>
+                </span>
+            }
+        </a>
+
+        <!-- ⭐ LINK THỐNG KÊ ĐƠN HÀNG (THÊM MỚI) -->
+        <a href="~/Admin/QuanLyDonHang/ThongKe" class="btn btn-outline-info shadow-sm">
+            <i class="bi bi-graph-up"></i> Thống kê đơn hàng
         </a>
         <a href="~/Admin/Home/NguoiDung" class="btn btn-outline-warning shadow-sm">
             <i class="bi bi-people"></i> Quản lý người dùng

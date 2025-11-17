@@ -1,0 +1,307 @@
+﻿@model List<LTW.Models.DonHang>
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var danhSachTrangThai = ViewBag.DanhSachTrangThai as List<LTW.Models.TrangThaiDonHang>;
+}
+
+@section Styles {
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .stat-pending {
+            color: #ffc107;
+        }
+
+        .stat-processing {
+            color: #007bff;
+        }
+
+        .stat-shipping {
+            color: #17a2b8;
+        }
+
+        .stat-completed {
+            color: #28a745;
+        }
+
+        .stat-cancelled {
+            color: #dc3545;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+            .filter-controls select,
+            .filter-controls input {
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+
+        .btn-filter {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            .btn-filter:hover {
+                background: #0056b3;
+            }
+
+        .order-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-1 {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-2 {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-3 {
+            background: #d1e7dd;
+            color: #0a3622;
+        }
+
+        .status-4 {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        .btn-view {
+            background: #007bff;
+            color: white;
+        }
+
+            .btn-view:hover {
+                background: #0056b3;
+                color: white;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 64px;
+                color: #dee2e6;
+                margin-bottom: 20px;
+            }
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+{
+    string message = (TempData["SuccessMessage"] as string) ?? (TempData["ErrorMessage"] as string) ?? "";
+    string alertClass = TempData["ErrorMessage"] != null ? "alert-danger" : "alert-success";
+    <div class="alert @alertClass alert-dismissible fade show" role="alert">
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="admin-header">
+    <h2><i class="fas fa-box"></i> Quản lý đơn hàng</h2>
+    <p>Theo dõi và xử lý đơn hàng của khách hàng</p>
+</div>
+
+<!-- Thống kê -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-shopping-cart fa-2x stat-pending"></i>
+        <div class="stat-number stat-pending">@ViewBag.DonChoXuLy</div>
+        <div class="stat-label">Chờ xử lý</div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-truck fa-2x stat-shipping"></i>
+        <div class="stat-number stat-shipping">@ViewBag.DonDangGiao</div>
+        <div class="stat-label">Đang giao</div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-check-circle fa-2x stat-completed"></i>
+        <div class="stat-number stat-completed">@ViewBag.DonHoanThanh</div>
+        <div class="stat-label">Hoàn thành</div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-times-circle fa-2x stat-cancelled"></i>
+        <div class="stat-number stat-cancelled">@ViewBag.DonDaHuy</div>
+        <div class="stat-label">Đã hủy</div>
+    </div>
+</div>
+
+<!-- Filter -->
+<div class="filter-bar">
+    <form method="get" action="@Url.Action("Index")">
+        <div class="filter-controls">
+            <select name="trangThai" class="form-control">
+                <option value="">-- Tất cả trạng thái --</option>
+                @if (danhSachTrangThai != null)
+                {
+                    foreach (var tt in danhSachTrangThai)
+                    {
+                        <option value="@tt.TrangThaiID"
+                                @(ViewBag.TrangThaiSelected == tt.TrangThaiID ? "selected" : "")>
+                            @tt.TenTrangThai
+                        </option>
+                    }
+                }
+            </select>
+            <input type="text" name="search" placeholder="Tìm theo mã đơn, tên, SĐT..."
+                   value="@ViewBag.SearchKeyword" class="form-control" style="flex: 1;" />
+            <button type="submit" class="btn-filter">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Bảng đơn hàng -->
+<div class="order-table">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h4>Không có đơn hàng nào</h4>
+        </div>
+    }
+    else
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã ĐH</th>
+                    <th>Ngày đặt</th>
+                    <th>Khách hàng</th>
+                    <th>SĐT</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dh in Model)
+                {
+                    <tr>
+                        <td><strong>#@dh.DonHangID</strong></td>
+                        <td>@dh.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@dh.HoTen</td>
+                        <td>@dh.SoDienThoai</td>
+                        <td><strong>@String.Format("{0:N0}₫", dh.TongTien)</strong></td>
+                        <td>
+                            <span class="status-badge status-@dh.TrangThaiID">
+                                @dh.TenTrangThai
+                            </span>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("ChiTiet", new { id = dh.DonHangID })"
+                               class="btn-action btn-view">
+                                <i class="fas fa-eye"></i> Xem
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

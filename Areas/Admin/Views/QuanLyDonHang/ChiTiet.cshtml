@@ -1,0 +1,588 @@
+﻿@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var donHang = ViewBag.DonHang as LTW.Models.DonHang;
+    var chiTiets = ViewBag.ChiTiets as List<LTW.Models.ChiTietDonHang>;
+    var sanPhams = ViewBag.SanPhams as List<LTW.Models.SanPham>;
+    var danhSachTrangThai = ViewBag.DanhSachTrangThai as List<LTW.Models.TrangThaiDonHang>;
+}
+
+@section Styles {
+    <style>
+        .detail-container {
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .detail-header h2 {
+                margin: 0;
+                font-size: 28px;
+            }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            padding: 12px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .info-value {
+            color: #212529;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+            .product-item:hover {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .product-item img {
+                width: 80px;
+                height: 80px;
+                border-radius: 8px;
+                margin-right: 15px;
+                object-fit: cover;
+            }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-quantity {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: #007bff;
+            text-align: right;
+        }
+
+        .total-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .total-label {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .total-amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .status-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-admin {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-confirm {
+            background: #28a745;
+            color: white;
+        }
+
+            .btn-confirm:hover {
+                background: #218838;
+            }
+
+        .btn-complete {
+            background: #007bff;
+            color: white;
+        }
+
+            .btn-complete:hover {
+                background: #0056b3;
+            }
+
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+        }
+
+            .btn-cancel:hover {
+                background: #c82333;
+            }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+
+            .btn-back:hover {
+                background: #5a6268;
+                color: white;
+            }
+
+        .status-timeline {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            padding-bottom: 20px;
+        }
+
+            .timeline-item:last-child {
+                padding-bottom: 0;
+            }
+
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                left: 8px;
+                top: 8px;
+                bottom: -20px;
+                width: 2px;
+                background: #dee2e6;
+            }
+
+            .timeline-item:last-child::before {
+                display: none;
+            }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #28a745;
+        }
+
+            .timeline-dot.pending {
+                border-color: #ffc107;
+            }
+
+            .timeline-dot.active {
+                border-color: #007bff;
+                background: #007bff;
+            }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-overlay.active {
+                display: flex;
+            }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+            .modal-content h3 {
+                margin-top: 0;
+                color: #dc3545;
+            }
+
+            .modal-content textarea {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                min-height: 100px;
+                margin: 15px 0;
+            }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        @@media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+                .product-item img {
+                    margin: 0 0 15px 0;
+                }
+        }
+    </style>
+}
+
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+{
+    string message = (TempData["SuccessMessage"] as string) ?? (TempData["ErrorMessage"] as string) ?? "";
+    string alertClass = TempData["ErrorMessage"] != null ? "alert-danger" : "alert-success";
+    <div class="alert @alertClass alert-dismissible fade show" role="alert">
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="detail-container">
+    <div class="detail-header">
+        <div>
+            <h2><i class="fas fa-file-invoice"></i> Chi tiết đơn hàng #@donHang.DonHangID</h2>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;">
+                Ngày đặt: @donHang.NgayDat.ToString("dd/MM/yyyy HH:mm")
+            </p>
+        </div>
+        <div>
+            <span class="status-badge status-@donHang.TrangThaiID" style="font-size: 16px; padding: 10px 20px;">
+                @donHang.TenTrangThai
+            </span>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <!-- Cột trái: Thông tin chi tiết -->
+        <div>
+            <!-- Thông tin khách hàng -->
+            <div class="detail-card">
+                <div class="card-title">
+                    <i class="fas fa-user"></i> Thông tin khách hàng
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Họ tên:</span>
+                    <span class="info-value">@donHang.HoTen</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">@donHang.Email</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số điện thoại:</span>
+                    <span class="info-value">@donHang.SoDienThoai</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Địa chỉ:</span>
+                    <span class="info-value">@donHang.DiaChi</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Thanh toán:</span>
+                    <span class="info-value">@donHang.PhuongThucThanhToan</span>
+                </div>
+                @if (!string.IsNullOrEmpty(donHang.GhiChu))
+                {
+                    <div class="info-row">
+                        <span class="info-label">Ghi chú:</span>
+                        <span class="info-value" style="white-space: pre-line;">@donHang.GhiChu</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Sản phẩm -->
+            <div class="detail-card">
+                <div class="card-title">
+                    <i class="fas fa-box-open"></i> Sản phẩm đã đặt
+                </div>
+                @foreach (var ct in chiTiets)
+                {
+                    var sp = sanPhams.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+                    if (sp != null)
+                    {
+                        var thanhTien = ct.Gia * ct.SoLuong;
+                        <div class="product-item">
+                            <img src="~/Content/Images/@sp.HinhAnh1"
+                                 alt="@sp.TenSanPham"
+                                 onerror="this.src='/Content/Images/no-image.png'" />
+                            <div class="product-info">
+                                <div class="product-name">@sp.TenSanPham</div>
+                                <div class="product-quantity">
+                                    Số lượng: @ct.SoLuong x @String.Format("{0:N0}₫", ct.Gia)
+                                </div>
+                            </div>
+                            <div class="product-price">
+                                @String.Format("{0:N0}₫", thanhTien)
+                            </div>
+                        </div>
+                    }
+                }
+
+                <div class="total-box">
+                    <div class="total-label">Tổng cộng</div>
+                    <div class="total-amount">@String.Format("{0:N0}₫", donHang.TongTien)</div>
+                </div>
+            </div>
+
+            <!-- Timeline trạng thái -->
+            <div class="detail-card">
+                <div class="card-title">
+                    <i class="fas fa-history"></i> Lịch sử trạng thái
+                </div>
+                <div class="status-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot @(donHang.TrangThaiID >= 1 ? "active" : "pending")"></div>
+                        <strong>Chờ xử lý</strong>
+                        <div style="font-size: 13px; color: #6c757d;">Đơn hàng đã được tạo</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot @(donHang.TrangThaiID >= 2 ? "active" : "pending")"></div>
+                        <strong>Đang giao</strong>
+                        <div style="font-size: 13px; color: #6c757d;">Đơn hàng đang được vận chuyển</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot @(donHang.TrangThaiID == 3 ? "active" : "pending")"></div>
+                        <strong>Hoàn tất</strong>
+                        <div style="font-size: 13px; color: #6c757d;">Giao hàng thành công</div>
+                    </div>
+                    @if (donHang.TrangThaiID == 4)
+                    {
+                        <div class="timeline-item">
+                            <div class="timeline-dot" style="border-color: #dc3545; background: #dc3545;"></div>
+                            <strong style="color: #dc3545;">Đã hủy</strong>
+                            <div style="font-size: 13px; color: #6c757d;">Đơn hàng đã bị hủy</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Actions -->
+        <div>
+            <div class="detail-card">
+                <div class="card-title">
+                    <i class="fas fa-cogs"></i> Quản lý đơn hàng
+                </div>
+
+                <div class="action-buttons">
+                    @if (donHang.TrangThaiID == 1)
+                    {
+                        <!-- Chờ xử lý: Có thể xác nhận hoặc hủy -->
+                        <form method="post" action="@Url.Action("XacNhan", new { id = donHang.DonHangID })">
+                            <button type="submit" class="btn-admin btn-confirm">
+                                <i class="fas fa-check"></i> Xác nhận đơn hàng
+                            </button>
+                        </form>
+
+                        <button type="button" class="btn-admin btn-cancel" onclick="showCancelModal()">
+                            <i class="fas fa-times"></i> Hủy đơn hàng
+                        </button>
+                    }
+                    else if (donHang.TrangThaiID == 2)
+                    {
+                        <!-- Đang giao: Có thể hoàn thành -->
+                        <form method="post" action="@Url.Action("HoanThanh", new { id = donHang.DonHangID })">
+                            <button type="submit" class="btn-admin btn-complete">
+                                <i class="fas fa-check-circle"></i> Hoàn thành đơn hàng
+                            </button>
+                        </form>
+
+                        <button type="button" class="btn-admin btn-cancel" onclick="showCancelModal()">
+                            <i class="fas fa-times"></i> Hủy đơn hàng
+                        </button>
+                    }
+                    else if (donHang.TrangThaiID == 3)
+                    {
+                        <!-- Đã hoàn thành -->
+                        <div style="padding: 20px; text-align: center; background: #d1e7dd; border-radius: 8px; color: #0a3622;">
+                            <i class="fas fa-check-circle fa-3x" style="margin-bottom: 10px;"></i>
+                            <div><strong>Đơn hàng đã hoàn thành</strong></div>
+                        </div>
+                    }
+                    else if (donHang.TrangThaiID == 4)
+                    {
+                        <!-- Đã hủy -->
+                        <div style="padding: 20px; text-align: center; background: #f8d7da; border-radius: 8px; color: #842029;">
+                            <i class="fas fa-times-circle fa-3x" style="margin-bottom: 10px;"></i>
+                            <div><strong>Đơn hàng đã bị hủy</strong></div>
+                        </div>
+                    }
+
+                    <a href="@Url.Action("Index")" class="btn-admin btn-back">
+                        <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+
+            <!-- Thông tin bổ sung -->
+            <div class="detail-card">
+                <div class="card-title">
+                    <i class="fas fa-info-circle"></i> Thông tin bổ sung
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Mã đơn hàng:</span>
+                    <span class="info-value">#@donHang.DonHangID</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ngày đặt:</span>
+                    <span class="info-value">@donHang.NgayDat.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Trạng thái kho:</span>
+                    <span class="info-value">
+                        @if (donHang.DaTruKho)
+                        {
+                            <span style="color: #28a745;">
+                                <i class="fas fa-check"></i> Đã trừ kho
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="color: #ffc107;">
+                                <i class="fas fa-clock"></i> Chưa trừ kho
+                            </span>
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal hủy đơn -->
+<div id="cancelModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3><i class="fas fa-exclamation-triangle"></i> Hủy đơn hàng</h3>
+        <p>Bạn có chắc chắn muốn hủy đơn hàng #@donHang.DonHangID?</p>
+
+        <form method="post" action="@Url.Action("Huy", new { id = donHang.DonHangID })">
+            <label style="font-weight: 600; margin-bottom: 5px; display: block;">
+                Lý do hủy <span style="color: #dc3545;">*</span>
+            </label>
+            <textarea name="lyDo" placeholder="Nhập lý do hủy đơn hàng..." required></textarea>
+
+            <div class="modal-buttons">
+                <button type="button" class="btn-admin btn-back" onclick="hideCancelModal()">
+                    Đóng
+                </button>
+                <button type="submit" class="btn-admin btn-cancel">
+                    Xác nhận hủy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showCancelModal() {
+            document.getElementById('cancelModal').classList.add('active');
+        }
+
+        function hideCancelModal() {
+            document.getElementById('cancelModal').classList.remove('active');
+        }
+
+        // Đóng modal khi click outside
+        document.getElementById('cancelModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideCancelModal();
+            }
+        });
+
+        // Auto-dismiss alert
+        setTimeout(function () {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 5000);
+    </script>
+}
