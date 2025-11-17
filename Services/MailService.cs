@@ -45,7 +45,7 @@ namespace LTW.Services
             catch (Exception ex)
             {
                 Console.WriteLine("❌ Lỗi gửi mail: " + ex.Message);
-                throw;
+                //throw;
             }
         }
     }
