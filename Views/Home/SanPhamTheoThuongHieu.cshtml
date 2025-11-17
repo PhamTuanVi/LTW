@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<LTW.Models.SanPham>
-
+@using System.Data.SqlClient
 @{
     ViewBag.Title = "Sản phẩm theo thương hiệu";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -20,6 +20,16 @@
         <div class="row g-4">
             @foreach (var sp in Model)
             {
+                decimal trungBinhSao = 0;
+                using (var con = LTW.Models.DBConnect.GetConnection())
+                {
+                    con.Open();
+                    using (var cmd = new SqlCommand("SELECT dbo.fn_TrungBinhRatting(@SanPhamID)", con))
+                    {
+                        cmd.Parameters.AddWithValue("@SanPhamID", sp.SanPhamID);
+                        trungBinhSao = Convert.ToDecimal(cmd.ExecuteScalar());
+                    }
+                }
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="product-card">
                         <div class="product-card-img">
@@ -39,6 +49,14 @@
                                 <span class="new-price">@string.Format("{0:N0}đ", sp.Gia)</span>
                             </div>
                             <div class="text-muted small">Thương hiệu: @sp.ThuongHieu</div>
+                            <div class="d-flex align-items-center mt-1">
+                                <div class="text-warning me-2">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="small text-dark">
+                                    @trungBinhSao
+                                </div>
+                            </div>
                         </div>
 
                         <div class="product-card-footer">

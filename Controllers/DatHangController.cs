@@ -1,6 +1,7 @@
 ﻿using LTW.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -39,6 +40,18 @@ namespace LTW.Controllers
             {
                 TempData["ErrorMessage"] = "Giỏ hàng của bạn đang trống!";
                 return RedirectToAction("Index", "GioHang");
+            }
+            foreach (var ct in giohangchitietcanhan)
+            {
+                var sanpham = lstsp.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+                if (sanpham != null)
+                {
+                    if (ct.SoLuong > sanpham.SoLuong) // SoLuong là số lượng tồn kho
+                    {
+                        TempData["ErrorMessage"] = $"Sản phẩm {sanpham.TenSanPham} chỉ còn {sanpham.SoLuong} trong kho. Vui lòng điều chỉnh số lượng!";
+                        return RedirectToAction("Index", "GioHang"); // Quay lại giỏ hàng
+                    }
+                }
             }
 
             ViewBag.ChiTiets = giohangchitietcanhan;
@@ -325,5 +338,41 @@ namespace LTW.Controllers
 
             return RedirectToAction("DonHangDaDat");
         }
+        [HttpPost]
+        public ActionResult ThemDanhGia(int SanPhamID, int DonHangID, int SoSao, string NoiDung)
+        {
+            int taiKhoanId = Convert.ToInt32(Session["userid"]);
+
+            try
+            {
+                using (var con = DBConnect.GetConnection())
+                {
+                    con.Open();
+
+                    string sql = @"
+                INSERT INTO DanhGia (SanPhamID, DonHangID, SoSao, NoiDung, TaiKhoanID)
+                VALUES (@SanPhamID, @DonHangID, @SoSao, @NoiDung, @TaiKhoanID)";
+
+                    using (var cmd = new SqlCommand(sql, con))
+                    {
+                        cmd.Parameters.AddWithValue("@SanPhamID", SanPhamID);
+                        cmd.Parameters.AddWithValue("@DonHangID", DonHangID);
+                        cmd.Parameters.AddWithValue("@SoSao", SoSao);
+                        cmd.Parameters.AddWithValue("@NoiDung", NoiDung ?? "");
+                        cmd.Parameters.AddWithValue("@TaiKhoanID", taiKhoanId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                TempData["SuccessMessage"] = "Cảm ơn bạn đã đánh giá!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Đánh giá thất bại: " + ex.Message;
+            }
+
+            return RedirectToAction("DonHangDaDat");
+        }
+
     }
 }

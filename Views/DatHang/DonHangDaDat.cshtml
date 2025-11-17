@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "Đơn hàng đã đặt";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var chiTietData = new LTW.Models.ChiTietDonHangData();
+    var danhGiaData = new LTW.Models.DanhGiaData();
+    var currentUserId = (int)Session["userid"];
 }
 
 @section Styles {
@@ -316,6 +319,46 @@
         }
     }
 </div>
+<!-- Modal đánh giá sản phẩm -->
+<div class="modal fade" id="modalDanhGia" tabindex="-1" aria-labelledby="modalDanhGiaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("ThemDanhGia", "DatHang")">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDanhGiaLabel">Đánh giá sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="nextDanhGia()"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="SanPhamID" id="spID" />
+                    <input type="hidden" name="DonHangID" id="spDonHangID" />
+                    <div class="text-center mb-3">
+                        <img id="spAnh" src="" style="max-width:150px; max-height:150px;" />
+                        <h5 id="spTen"></h5>
+                    </div>
+                    <div class="mb-3">
+                        <label>Số sao:</label>
+                        <select class="form-select" name="SoSao">
+                            <option value="1">1 sao</option>
+                            <option value="2">2 sao</option>
+                            <option value="3">3 sao</option>
+                            <option value="4">4 sao</option>
+                            <option value="5">5 sao</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Bình luận:</label>
+                        <textarea class="form-control" name="NoiDung" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="nextDanhGia()">Bỏ qua</button>
+                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script>
@@ -327,5 +370,79 @@
                 setTimeout(() => alert.remove(), 500);
             }
         }, 5000);
+    var danhGiaSPs = [];
+    var currentIndex = 0;
+
+    @foreach(var dh in Model)
+    {
+        if(dh.TrangThaiID == 3) // đơn đã giao
+        {
+            var chiTiets = chiTietData.dsChiTiet.Where(ct => ct.DonHangID == dh.DonHangID).ToList();
+            foreach(var ct in chiTiets)
+            {
+                var spData = new LTW.Models.SanPhamData();
+                var sp = spData.dsSanPham.FirstOrDefault(s => s.SanPhamID == ct.SanPhamID);
+
+                var daDanhGia = danhGiaData.dsDanhGia.Any(d =>
+                    d.SanPhamID == ct.SanPhamID &&
+                    d.DonHangID == dh.DonHangID &&
+                    d.TaiKhoanID == currentUserId
+                );
+
+                if(!daDanhGia && sp != null)
+                {
+                    <text>
+                    danhGiaSPs.push({
+                        id: @sp.SanPhamID,
+                        donHangId: @dh.DonHangID,
+                        ten: "@sp.TenSanPham",
+                        anh: "@Url.Content("~/Content/Images/" + sp.HinhAnh1)"
+                    });
+                    </text>
+                }
+            }
+        }
+    }
+
+        function showDanhGiaModal(index) {
+            if (index >= danhGiaSPs.length) return;
+            currentIndex = index;
+            var sp = danhGiaSPs[index];
+
+            document.getElementById("spID").value = sp.id;
+            document.getElementById("spTen").innerText = sp.ten;
+            document.getElementById("spAnh").src = sp.anh;
+
+            // Thêm hidden input DonHangID nếu chưa có
+            var modalForm = document.querySelector("#modalDanhGia form");
+            var spDonHangInput = document.getElementById("spDonHangID");
+            if (!spDonHangInput) {
+                spDonHangInput = document.createElement("input");
+                spDonHangInput.type = "hidden";
+                spDonHangInput.id = "spDonHangID";
+                spDonHangInput.name = "DonHangID";
+                modalForm.appendChild(spDonHangInput);
+            }
+            spDonHangInput.value = sp.donHangId;
+
+            var modal = new bootstrap.Modal(document.getElementById('modalDanhGia'));
+            modal.show();
+        }
+
+    function nextDanhGia() {
+        var modalEl = document.getElementById('modalDanhGia');
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        currentIndex++;
+        if(currentIndex < danhGiaSPs.length){
+            setTimeout(function(){ showDanhGiaModal(currentIndex); }, 300);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if(danhGiaSPs.length > 0){
+            showDanhGiaModal(0);
+        }
+    });
     </script>
 }

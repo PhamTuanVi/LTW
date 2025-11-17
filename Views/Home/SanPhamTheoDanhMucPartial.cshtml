@@ -1,5 +1,5 @@
 ﻿@model List<LTW.Models.SanPham>
-
+@using System.Data.SqlClient
 <link href="@Url.Content("~/Content/css/product_card.css?v=" + DateTime.Now.Ticks)" rel="stylesheet" />
 
 @if (Model != null && Model.Any())
@@ -7,6 +7,16 @@
     <div class="row g-4 mt-3">
         @foreach (var sp in Model)
         {
+            decimal trungBinhSao = 0;
+            using (var con = LTW.Models.DBConnect.GetConnection())
+            {
+                con.Open();
+                using (var cmd = new SqlCommand("SELECT dbo.fn_TrungBinhRatting(@SanPhamID)", con))
+                {
+                    cmd.Parameters.AddWithValue("@SanPhamID", sp.SanPhamID);
+                    trungBinhSao = Convert.ToDecimal(cmd.ExecuteScalar());
+                }
+            }
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="product-card">
                     <div class="product-card-img">
@@ -26,15 +36,13 @@
                             <span class="new-price">@string.Format("{0:N0}đ", sp.Gia)</span>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mt-1">
-                            <div class="text-warning small">
+                        <div class="d-flex align-items-center mt-1">
+                            <div class="text-warning me-2">
                                 <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
                             </div>
-                            <div class="text-muted small">Đã bán: 12</div>
+                            <div class="small text-dark">
+                                @trungBinhSao
+                            </div>
                         </div>
                     </div>
 

@@ -1,4 +1,5 @@
 ﻿@model List<LTW.Models.SanPham>
+@using System.Data.SqlClient
 @{
     ViewBag.Title = "LocTheoDanhMuc";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,6 +16,16 @@
         <div class="row g-3">
             @foreach (var sp in Model)
             {
+                decimal trungBinhSao = 0;
+                using (var con = LTW.Models.DBConnect.GetConnection())
+                {
+                    con.Open();
+                    using (var cmd = new SqlCommand("SELECT dbo.fn_TrungBinhRatting(@SanPhamID)", con))
+                    {
+                        cmd.Parameters.AddWithValue("@SanPhamID", sp.SanPhamID);
+                        trungBinhSao = Convert.ToDecimal(cmd.ExecuteScalar());
+                    }
+                }
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card h-100 product-card shadow-sm">
                         <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })">
@@ -24,6 +35,14 @@
                         <div class="card-body text-center">
                             <h6 class="card-title text-truncate">@sp.TenSanPham</h6>
                             <p class="text-danger fw-bold mb-1">@string.Format("{0:N0}₫", sp.Gia)</p>
+                            <div class="d-flex align-items-center mt-1">
+                                <div class="text-warning me-2">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="small text-dark">
+                                    @trungBinhSao
+                                </div>
+                            </div>
                             <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.SanPhamID })"
                                class="btn btn-sm btn-outline-primary">
                                 Xem chi tiết

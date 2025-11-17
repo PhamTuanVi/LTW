@@ -5,8 +5,8 @@ using System.Web;
 
 namespace LTW.Models
 {
-    public class DonHang
-    {
+	public class DonHang
+	{
         public int DonHangID { get; set; }
         public int TaiKhoanID { get; set; }
         public DateTime NgayDat { get; set; }
@@ -26,6 +26,5 @@ namespace LTW.Models
 
         //  Thông tin JOIN từ TrangThaiDonHang
         public string TenTrangThai { get; set; }
-
     }
 }

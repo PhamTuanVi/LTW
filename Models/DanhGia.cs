@@ -7,15 +7,17 @@ using System.Web;
 
 namespace LTW.Models
 {
-	public class DanhGia
-	{ 
+    public class DanhGia
+    {
         public int DanhGiaID { get; set; }
         public string NoiDung { get; set; }
         public int SoSao { get; set; }
         public int TaiKhoanID { get; set; }
         public int SanPhamID { get; set; }
+        public int? DonHangID { get; set; } // Nullable vì các đánh giá cũ có thể chưa có
         public string TraLoiAdmin { get; set; }
     }
+
     public class DanhGiaData
     {
         public List<DanhGia> dsDanhGia = new List<DanhGia>();
@@ -38,6 +40,7 @@ namespace LTW.Models
                         SoSao = Convert.ToInt32(dr["SoSao"]),
                         TaiKhoanID = Convert.ToInt32(dr["TaiKhoanID"]),
                         SanPhamID = Convert.ToInt32(dr["SanPhamID"]),
+                        DonHangID = dr["DonHangID"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["DonHangID"]),
                         TraLoiAdmin = dr["TraLoiAdmin"] == DBNull.Value ? null : dr["TraLoiAdmin"].ToString()
                     };
                     dsDanhGia.Add(dg);

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<LTW.Models.SanPham>
+@using System.Data.SqlClient
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -165,6 +166,16 @@
         {
             foreach (var sanPham in sanPhamMoi)
             {
+                decimal trungBinhSao = 0;
+                using (var con = LTW.Models.DBConnect.GetConnection())
+                {
+                    con.Open();
+                    using (var cmd = new SqlCommand("SELECT dbo.fn_TrungBinhRatting(@SanPhamID)", con))
+                    {
+                        cmd.Parameters.AddWithValue("@SanPhamID", sanPham.SanPhamID);
+                        trungBinhSao = Convert.ToDecimal(cmd.ExecuteScalar());
+                    }
+                }
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="product-card">
                         <div class="product-card-img">
@@ -180,13 +191,13 @@
                             <div class="product-price">
                                 <span class="new-price">@string.Format("{0:N0}đ", sanPham.Gia)</span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mt-1">
-                                <div class="text-warning small">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                    <i class="far fa-star"></i>
+                            <div class="d-flex align-items-center mt-1">
+                                <div class="text-warning me-2">
+                                    <i class="fas fa-star"></i>
                                 </div>
-                                <div class="text-muted small">Đã bán: 12</div>
+                                <div class="small text-dark">
+                                    @trungBinhSao
+                                </div>
                             </div>
                         </div>
                         <div class="product-card-footer">
