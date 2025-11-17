@@ -28,5 +28,15 @@ namespace LTW.Controllers
 
             return PartialView("CauHinhPartial", ch);
         }
+        //San Pham Tuong Tu
+        public PartialViewResult SanPhamTuongTu(int sanPhamId, int danhMucId, string thuonghieu)
+        {
+            var sp = new SanPhamData();
+            var lstsp = sp.dsSanPham.ToList();
+            // Lấy các sản phẩm cùng danh mục, loại trừ sản phẩm hiện tại, lấy tối đa 4 sản phẩm
+            var spTuongTu = lstsp.Where(s => s.DanhMucID == danhMucId && s.SanPhamID != sanPhamId&&s.ThuongHieu==thuonghieu).Take(4).ToList();
+
+            return PartialView("SanPhamTuongTu", spTuongTu);
+        }
     }
 }

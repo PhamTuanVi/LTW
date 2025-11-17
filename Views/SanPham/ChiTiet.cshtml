@@ -120,6 +120,15 @@
             </div>
         </div>
     </div>
+    <!-- Sản phẩm tương tự -->
+    <div class="mt-5">
+        <h3 class="fw-bold text-gradient mb-4 text-center">
+            <i class="bi bi-grid-3x3-gap-fill"></i> Sản phẩm tương tự
+        </h3>
+        <div class="bg-light p-4 rounded-4">
+            @Html.Action("SanPhamTuongTu", "SanPham", new { sanPhamId = Model.SanPhamID, danhMucId = Model.DanhMucID, thuonghieu=Model.ThuongHieu })
+        </div>
+    </div>
 </div>
 
 @section Scripts {

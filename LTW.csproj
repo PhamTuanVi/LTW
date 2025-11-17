@@ -218,7 +218,6 @@
     <Content Include="Areas\Admin\Views\SanPham\ChiTiet.cshtml" />
     <Content Include="Areas\Admin\Views\SanPham\CauHinhPartial.cshtml" />
     <Content Include="Areas\Admin\Views\SanPham\SuaSanPham.cshtml" />
-    <Content Include="Content\sql\LTW.bacpac" />
     <Content Include="Areas\Admin\Views\Home\NguoiDung.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\cusstom\header_user.js" />
@@ -263,6 +262,7 @@
     <Content Include="Views\SanPham\CauHinhPartial.cshtml" />
     <Content Include="Views\GioHang\Index.cshtml" />
     <Content Include="Views\Home\SanPhamTheoThuongHieu.cshtml" />
+    <Content Include="Views\SanPham\SanPhamTuongTu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -271,6 +271,7 @@
     <Folder Include="Areas\Admin\Views\TaiKhoan\" />
     <Folder Include="Content\avatars\" />
     <Folder Include="Content\Images\" />
+    <Folder Include="Content\sql\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
